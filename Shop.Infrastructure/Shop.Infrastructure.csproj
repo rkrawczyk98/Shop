@@ -34,6 +34,7 @@
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="DependencyResolver\" />
+    <Folder Include="Microservices\" />
     <Folder Include="Services\" />
     <Folder Include="Repositories\" />
   </ItemGroup>
