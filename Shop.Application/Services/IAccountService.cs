@@ -12,6 +12,6 @@ namespace Shop.Application.Services
     {
         Task<IdentityResult> RegisterUserAsync(string email, string password);
         Task<SignInResult> LoginAsync(string email, string password);
-        Task<IdentityResult> ResetPasswordAsync(string oldPassword, string newPassword);
+        Task<IdentityResult> ResetPasswordAsync(string email, string newPassword, string token);
     }
 }
