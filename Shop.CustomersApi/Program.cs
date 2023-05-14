@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Shop.Application.Services;
 using Shop.Domain.Entities;
 using Shop.Infrastructure.Data;
+using Shop.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +26,7 @@ builder.Services.Configure<IdentityOptions>(options => //jw.
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 8;
 });
-builder.Services.AddScoped<IAccountService, IAccountService>(); //jw.
+builder.Services.AddScoped<IAccountService, AccountService>(); //jw.
 
 var app = builder.Build();
 

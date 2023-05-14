@@ -19,6 +19,16 @@ namespace Shop.Infrastructure.Services
             _productServiceBaseUrl = "";
         }
 
+        public Product CreateProduct(Product product)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteProduct(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<Product> GetAllProducts()
         {
             var url = $"{_productServiceBaseUrl}/"; // dodać reszte adresu do metody w mikroserwisie 
@@ -31,7 +41,25 @@ namespace Shop.Infrastructure.Services
             throw new NotImplementedException();
         }
 
+        public Product GetProductById(int id)
+        {
+            var url = $"{_productServiceBaseUrl}/";
+            throw new NotImplementedException();
+        }
+
+        public bool ProductExists(int productId)
+        {
+            var url = $"{_productServiceBaseUrl}/";
+            throw new NotImplementedException();
+        }
+
         public void SaveProduct(Product product)
+        {
+            var url = $"{_productServiceBaseUrl}/";
+            throw new NotImplementedException();
+        }
+
+        public Product UpdateProduct(Product product)
         {
             var url = $"{_productServiceBaseUrl}/";
             throw new NotImplementedException();
