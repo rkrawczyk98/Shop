@@ -58,7 +58,7 @@ namespace Shop.UsersApi.Controllers
         [HttpPost("resetPassword")]
         public async Task<IActionResult> ResetPasswordAsync(string email,string newPassword)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByNameAsync(email);
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
             if (result.Succeeded)
