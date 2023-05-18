@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Shop.Application.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Shop.Application.Interfaces;
 using Shop.Domain.Entities;
 using Shop.Infrastructure.Data;
 using Shop.Infrastructure.Services;
+using Shop.WebUI;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 

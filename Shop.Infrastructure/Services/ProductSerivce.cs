@@ -1,4 +1,5 @@
-﻿using Shop.Application.Services;
+﻿using Shop.Application.Core.Services;
+using Shop.Application.Interfaces;
 using Shop.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -8,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace Shop.Infrastructure.Services
 {
-    public class ProductRepository : IProductRepository
+    public class ProductSerivce : IProductService
     {
         private readonly HttpClient _httpClient;
         private readonly string _productServiceBaseUrl;
 
-        public ProductRepository()
+        public ProductSerivce()
         {
             _httpClient= new HttpClient();
             _productServiceBaseUrl = "";
