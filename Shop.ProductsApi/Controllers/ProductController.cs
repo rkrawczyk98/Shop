@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shop.Application.Services;
+using Shop.Application.Core.Services;
+using Shop.Application.Interfaces;
 using Shop.Domain.Entities;
 
 namespace Shop.ProductsApi.Controllers
@@ -8,9 +9,9 @@ namespace Shop.ProductsApi.Controllers
     [Route("api/products")]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IProductService _productRepository;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(IProductService productRepository)
         {
             _productRepository = productRepository;
         }

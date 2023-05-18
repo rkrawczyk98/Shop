@@ -9,9 +9,12 @@
 //using Shop.Domain.Entities;
 //using Shop.Infrastructure.Data;
 
+using Microsoft.EntityFrameworkCore;
+using Shop.Infrastructure.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
-//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 var appSettings = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -19,19 +22,14 @@ var appSettings = new ConfigurationBuilder()
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .Build();
 
+builder.Services.AddDbContext<ShopDbContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Shop.DbMigrations")));
+
+Shop.Application.DependencyResolver.DependencyResolverService.Register(builder.Services);
 Shop.Infrastructure.DependencyResolver.DependencyResolverService.Register(builder.Services, appSettings);
 
-//builder.Services.AddDbContext<ShopDbContext>(options => // nie wiem czy to bêdzie git, obczaiæ czy siê wywraca
-//{
-//    options.UseSqlServer(connectionString);
-//});
-//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<ShopDbContext>();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
 var app = builder.Build();
 
