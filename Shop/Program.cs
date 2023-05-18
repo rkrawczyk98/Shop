@@ -11,10 +11,11 @@
 
 using Microsoft.EntityFrameworkCore;
 using Shop.Infrastructure.Data;
+using Shop.Infrastructure.Data.Seeding;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 var appSettings = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -22,7 +23,7 @@ var appSettings = new ConfigurationBuilder()
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .Build();
 
-builder.Services.AddDbContext<ShopDbContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Shop.DbMigrations")));
+//builder.Services.AddDbContext<ShopDbContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Shop.Infrastructure")));
 
 Shop.Application.DependencyResolver.DependencyResolverService.Register(builder.Services);
 Shop.Infrastructure.DependencyResolver.DependencyResolverService.Register(builder.Services, appSettings);
@@ -30,6 +31,8 @@ Shop.Infrastructure.DependencyResolver.DependencyResolverService.Register(builde
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddEndpointsApiExplorer();
+
+//builder.Services.AddTransient<IContextSeed,ContextSeed>();
 
 var app = builder.Build();
 
