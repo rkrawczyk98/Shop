@@ -25,6 +25,7 @@ namespace Shop.UsersApi.Migrations
             modelBuilder.Entity("Shop.UsersApi.Models.ApplicationRole", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -54,7 +55,8 @@ namespace Shop.UsersApi.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_Role");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
@@ -92,6 +94,7 @@ namespace Shop.UsersApi.Migrations
             modelBuilder.Entity("Shop.UsersApi.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
@@ -162,7 +165,8 @@ namespace Shop.UsersApi.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_User");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -193,14 +197,9 @@ namespace Shop.UsersApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
@@ -220,14 +219,9 @@ namespace Shop.UsersApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("LoginProvider", "ProviderKey");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
@@ -240,14 +234,9 @@ namespace Shop.UsersApi.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
@@ -263,15 +252,10 @@ namespace Shop.UsersApi.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
@@ -289,30 +273,22 @@ namespace Shop.UsersApi.Migrations
 
             modelBuilder.Entity("Shop.UsersApi.Models.ApplicationUserClaim", b =>
                 {
-                    b.HasOne("Shop.UsersApi.Models.ApplicationUser", null)
+                    b.HasOne("Shop.UsersApi.Models.ApplicationUser", "User")
                         .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Shop.UsersApi.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1");
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("Shop.UsersApi.Models.ApplicationUserLogin", b =>
                 {
-                    b.HasOne("Shop.UsersApi.Models.ApplicationUser", null)
+                    b.HasOne("Shop.UsersApi.Models.ApplicationUser", "User")
                         .WithMany("Logins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Shop.UsersApi.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1");
 
                     b.Navigation("User");
                 });
@@ -325,15 +301,11 @@ namespace Shop.UsersApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Shop.UsersApi.Models.ApplicationUser", null)
+                    b.HasOne("Shop.UsersApi.Models.ApplicationUser", "User")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Shop.UsersApi.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1");
 
                     b.Navigation("Role");
 
@@ -342,15 +314,11 @@ namespace Shop.UsersApi.Migrations
 
             modelBuilder.Entity("Shop.UsersApi.Models.ApplicationUserToken", b =>
                 {
-                    b.HasOne("Shop.UsersApi.Models.ApplicationUser", null)
+                    b.HasOne("Shop.UsersApi.Models.ApplicationUser", "User")
                         .WithMany("Tokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Shop.UsersApi.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1");
 
                     b.Navigation("User");
                 });

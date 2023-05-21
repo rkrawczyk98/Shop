@@ -1,29 +1,23 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Shop.UsersApi.Models
 {
-    public class ApplicationRole : IdentityRole<string>, IRole //IdentityRole<Guid>,IRole
+    public class ApplicationRole : IdentityRole<string>
     {
         public ApplicationRole() : base()
         {
-
+            this.UserRoles= new HashSet<ApplicationUserRole>();
+            this.RoleClaims= new HashSet<ApplicationRoleClaim>();
         }
 
-        public ApplicationRole(string roleName) : base(roleName)
-        {
-
-        }
-
-        public ApplicationRole(string roleName, string description) : base(roleName)
-        {
-            Description = description;
-        }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public override string Id { get; set; }
 
         public string? Description { get; set; }
 
@@ -38,6 +32,5 @@ namespace Shop.UsersApi.Models
         public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
         public virtual ICollection<ApplicationRoleClaim> RoleClaims { get; set; }
 
-        //string IRole<string>.Id => Guid.NewGuid().ToString();
     }
 }

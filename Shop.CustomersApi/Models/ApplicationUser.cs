@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNet.Identity;
+﻿//using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Shop.UsersApi.Models
 {
-    public class ApplicationUser : IdentityUser<string>,IUser //IdentityUser<Guid>,IUser
+    public class ApplicationUser : IdentityUser<string>
     {
         public ApplicationUser() : base()
         {
@@ -17,6 +18,8 @@ namespace Shop.UsersApi.Models
             this.Logins = new HashSet<ApplicationUserLogin>();
             this.Tokens = new HashSet<ApplicationUserToken>();
         }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public override string Id { get; set; }
         public string? FirstName { get; set; }
         public string? FullName { get; set; }
         public string? LastName { get; set; }
@@ -28,7 +31,5 @@ namespace Shop.UsersApi.Models
         public virtual ICollection<ApplicationUserRole> Roles { get; set; }
         public virtual ICollection<ApplicationUserToken> Tokens { get; set; }  
         public virtual ICollection<ApplicationUserClaim> Claims { get; set; }
-
-        string IUser<string>.Id => Guid.NewGuid().ToString();
     }
 }
