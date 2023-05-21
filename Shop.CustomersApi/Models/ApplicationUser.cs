@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+﻿//using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shop.UsersApi.Models
 {
-    public class ApplicationUser : IdentityUser<string>,IUser //IdentityUser<Guid>,IUser
+    public class ApplicationUser : IdentityUser<string>
     {
         public ApplicationUser() : base()
         {
@@ -28,7 +28,5 @@ namespace Shop.UsersApi.Models
         public virtual ICollection<ApplicationUserRole> Roles { get; set; }
         public virtual ICollection<ApplicationUserToken> Tokens { get; set; }  
         public virtual ICollection<ApplicationUserClaim> Claims { get; set; }
-
-        string IUser<string>.Id => Guid.NewGuid().ToString();
     }
 }

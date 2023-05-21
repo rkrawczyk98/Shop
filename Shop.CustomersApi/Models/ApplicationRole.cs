@@ -8,21 +8,12 @@ using System.Threading.Tasks;
 
 namespace Shop.UsersApi.Models
 {
-    public class ApplicationRole : IdentityRole<string>, IRole //IdentityRole<Guid>,IRole
+    public class ApplicationRole : IdentityRole<string>
     {
         public ApplicationRole() : base()
         {
-
-        }
-
-        public ApplicationRole(string roleName) : base(roleName)
-        {
-
-        }
-
-        public ApplicationRole(string roleName, string description) : base(roleName)
-        {
-            Description = description;
+            this.UserRoles= new HashSet<ApplicationUserRole>();
+            this.RoleClaims= new HashSet<ApplicationRoleClaim>();
         }
 
         public string? Description { get; set; }
@@ -38,6 +29,5 @@ namespace Shop.UsersApi.Models
         public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
         public virtual ICollection<ApplicationRoleClaim> RoleClaims { get; set; }
 
-        //string IRole<string>.Id => Guid.NewGuid().ToString();
     }
 }

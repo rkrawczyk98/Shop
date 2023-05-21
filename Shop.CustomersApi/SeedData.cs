@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNet.Identity;
-//using Microsoft.AspNetCore.Identity;
+﻿//using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Shop.UsersApi.Data;
 using Shop.UsersApi.Interfaces;
 using Shop.UsersApi.Models;
-//using Shop.UsersApi.Services;
 
 namespace Shop.UsersApi
 {
@@ -24,21 +23,23 @@ namespace Shop.UsersApi
             {
                 logger.LogInformation("Generating inbuilt accounts");
 
-                if (admin != null)
+                if (admin == null)
                 {
                     var Admin = new ApplicationUser
                     {
+                        Id = Guid.NewGuid().ToString(),
                         UserName = "admin",
                         Email = "admin@admin.pl",
                         EmailConfirmed = true,
                         IsEnabled = true,
                         IsDeleted = false,
                         CreatedOn = DateTime.Now,
-                        Password = "admin",
-                        FirstName= "admin",
-                        LastName= "admin"
+                        Password = "Admin123!",
+                        FirstName = "admin",
+                        LastName = "admin",
+                        LockoutEnabled = false
                     };
-                    var result = userMgr.CreateAsync(Admin, "admin").Result;
+                    var result = userMgr.CreateAsync(Admin, "Admin123!").Result;
 
                     if (!result.Succeeded)
                     {
@@ -49,21 +50,23 @@ namespace Shop.UsersApi
                 }
                 else logger.LogDebug("User named 'admin' alredy exist.");
 
-                if (user != null)
+                if (user == null)
                 {
                     var User = new ApplicationUser 
                     {
+                        Id = Guid.NewGuid().ToString(),
                         UserName = "user",
                         Email = "user@user.pl",
                         EmailConfirmed = true,
                         IsEnabled = true,
                         IsDeleted = false,
                         CreatedOn = DateTime.Now,
-                        Password = "user",
+                        Password = "User123!",
                         FirstName = "user",
-                        LastName = "user"
+                        LastName = "user",
+                        LockoutEnabled = false
                     };
-                    var result = userMgr.CreateAsync(User, "user").Result;
+                    var result = userMgr.CreateAsync(User, "User123!").Result;
 
                     if (!result.Succeeded)
                     {
@@ -81,6 +84,7 @@ namespace Shop.UsersApi
             {
                 var adminRole = new ApplicationRole 
                 {
+                    Id = Guid.NewGuid().ToString(),
                     Name = "Admin",
                     CreatedOn= DateTime.Now
                 };
@@ -96,6 +100,7 @@ namespace Shop.UsersApi
             {
                 var basicRole = new ApplicationRole
                 {
+                    Id = Guid.NewGuid().ToString(),
                     Name = "Basic",
                     CreatedOn = DateTime.Now
                 };
@@ -107,18 +112,18 @@ namespace Shop.UsersApi
                 context.Roles.Add(basicRole);
             }
 
-            if ((userMgr.IsInRoleAsync(admin.Id.ToString(),"Admin")) == null) // Być może trzeba będzie dodać context.. cośtam Add/Update
+            if ((userMgr.IsInRoleAsync(admin,"Admin")) == null) // Być może trzeba będzie dodać context.. cośtam Add/Update
             {
-                var result = await userMgr.AddToRoleAsync(admin.Id.ToString(), "Admin");
+                var result = await userMgr.AddToRoleAsync(admin, "Admin");
                 if (!result.Succeeded)
                 {
                     throw new Exception(result.Errors.ToString());
                 }
             }
 
-            if ((userMgr.IsInRoleAsync(user.Id.ToString(), "Basic")) == null) // Być może trzeba będzie dodać context.. cośtam Add/Update
+            if ((userMgr.IsInRoleAsync(user, "Basic")) == null) // Być może trzeba będzie dodać context.. cośtam Add/Update
             {
-                var result = await userMgr.AddToRoleAsync(user.Id.ToString(), "Basic");
+                var result = await userMgr.AddToRoleAsync(user, "Basic");
                 if (!result.Succeeded)
                 {
                     throw new Exception(result.Errors.ToString());
