@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Shop.UsersApi.Data;
 using Shop.UsersApi.Interfaces;
 using Shop.UsersApi.Models;
@@ -16,7 +17,6 @@ namespace Shop.UsersApi
             await context.Database.MigrateAsync().ConfigureAwait(false);
             var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleMenager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
-            //var userRoleMaanger = scope.ServiceProvider.GetRequiredService<IdentityUserRole<>>
             var admin = await userMgr.FindByNameAsync("admin");
             var user = await userMgr.FindByNameAsync("user");
             if (admin == null || user == null)
@@ -45,7 +45,6 @@ namespace Shop.UsersApi
                     {
                         throw new Exception(result.Errors.ToString());
                     }
-                    context.Users.Add(Admin);
                     logger.LogDebug("Admin created");
                 }
                 else logger.LogDebug("User named 'admin' alredy exist.");
@@ -72,14 +71,12 @@ namespace Shop.UsersApi
                     {
                         throw new Exception(result.Errors.ToString());
                     }
-                    context.Users.Add(User);
                     logger.LogDebug("User created");
                 }
                 else logger.LogDebug("User named 'user' already exist.");
 
                 logger.LogInformation("Inbuilt account generation completed");
             }
-
             if (await roleMenager.FindByNameAsync("Admin") == null)
             {
                 var adminRole = new ApplicationRole 
@@ -93,7 +90,6 @@ namespace Shop.UsersApi
                 {
                     throw new Exception(result.Errors.ToString());
                 }
-                context.Roles.Add(adminRole);
             }
 
             if (await roleMenager.FindByNameAsync("Basic") == null)
@@ -109,29 +105,27 @@ namespace Shop.UsersApi
                 {
                     throw new Exception(result.Errors.ToString());
                 }
-                context.Roles.Add(basicRole);
             }
 
-            if ((userMgr.IsInRoleAsync(admin,"Admin")) == null) // Być może trzeba będzie dodać context.. cośtam Add/Update
+            ApplicationUser adminCreated = await userMgr.FindByNameAsync("admin");
+            if (!await userMgr.IsInRoleAsync(adminCreated, "Admin"))
             {
-                var result = await userMgr.AddToRoleAsync(admin, "Admin");
+                var result = await userMgr.AddToRoleAsync(adminCreated,"Admin");                 //var result = await userMgr.AddToRoleAsync(adminCreated,"Admin");
                 if (!result.Succeeded)
                 {
                     throw new Exception(result.Errors.ToString());
                 }
             }
 
-            if ((userMgr.IsInRoleAsync(user, "Basic")) == null) // Być może trzeba będzie dodać context.. cośtam Add/Update
+            if (userMgr.FindByNameAsync("user").Result.Roles.IsNullOrEmpty() == true)
             {
-                var result = await userMgr.AddToRoleAsync(user, "Basic");
+                var userCreated = await userMgr.FindByNameAsync("user");
+                var result = await userMgr.AddToRoleAsync(userCreated, "BASIC");
                 if (!result.Succeeded)
                 {
                     throw new Exception(result.Errors.ToString());
                 }
             }
-
-            
-            await context.SaveChangesAsync();
         }
     }
 }

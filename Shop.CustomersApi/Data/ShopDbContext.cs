@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Shop.UsersApi.Models;
@@ -9,9 +8,6 @@ namespace Shop.UsersApi.Data
 {
     public class ShopDbContext : IdentityDbContext<ApplicationUser ,ApplicationRole, string, ApplicationUserClaim, ApplicationUserRole,
         ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>
-
-        //: IdentityDbContext<IdentityUser<ApplicationUser>> , IdentityRole<ApplicationRole>, string, IdentityUserClaim<ApplicationUserClaim>, IdentityUserRole<ApplicationUserRole>,
-        //IdentityUserLogin<ApplicationUserLogin>, IdentityRoleClaim<ApplicationRoleClaim>, IdentityUserToken<ApplicationUserToken>>
     {
         public ShopDbContext(DbContextOptions<ShopDbContext> options) : base(options) 
         {
@@ -23,6 +19,8 @@ namespace Shop.UsersApi.Data
 
             builder.Entity<ApplicationUser>(b =>
             {
+                b.HasKey(e => e.Id)
+                    .HasName("PK_User");
                 // Each User can have many UserClaims
                 b.HasMany(e => e.Claims)
                     .WithOne()
@@ -50,6 +48,8 @@ namespace Shop.UsersApi.Data
 
             builder.Entity<ApplicationRole>(b =>
             {
+                b.HasKey(e => e.Id)
+                    .HasName("PK_Role");
                 // Each Role can have many entries in the UserRole join table
                 b.HasMany(e => e.UserRoles)
                     .WithOne(e => e.Role)
@@ -61,6 +61,30 @@ namespace Shop.UsersApi.Data
                     .WithOne(e => e.Role)
                     .HasForeignKey(rc => rc.RoleId)
                     .IsRequired();
+            });
+
+            builder.Entity<ApplicationUserClaim>(b =>
+            {
+                b.HasOne(e => e.User)
+                    .WithMany(au => au.Claims);
+            });
+
+            builder.Entity<ApplicationUserLogin>(b =>
+            {
+                b.HasOne(e => e.User)
+                    .WithMany(au => au.Logins);
+            });
+
+            builder.Entity<ApplicationUserRole>(b =>
+            {
+                b.HasOne(e => e.User)
+                    .WithMany(au => au.Roles);
+            });
+
+            builder.Entity<ApplicationUserToken>(b =>
+            {
+                b.HasOne(e => e.User)
+                    .WithMany(au => au.Tokens);
             });
         }
     }

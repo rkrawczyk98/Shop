@@ -20,9 +20,9 @@ namespace Shop.UsersApi.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync(string email, string password) //Microsoft.AspNetCore.Identity.SignInResult
+        public async Task<IActionResult> LoginAsync(string userName, string password)
         {
-            var result = await _signInManager.PasswordSignInAsync(email,password,isPersistent: false,lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(userName,password,isPersistent: false,lockoutOnFailure: false);
             if (result.Succeeded)
             {
                 return Ok();
@@ -35,6 +35,7 @@ namespace Shop.UsersApi.Controllers
         {
             var user = new ApplicationUser
             {
+                Id = Guid.NewGuid().ToString(),
                 UserName = email,
                 Email = email,
                 FirstName= firstName,
@@ -62,6 +63,12 @@ namespace Shop.UsersApi.Controllers
                 return Ok();
             }
             return BadRequest(result.Errors);
+        }
+
+        [HttpPost("addRole")]
+        public async Task<IActionResult> AddRole(string userName, string password)
+        {
+
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,8 @@ namespace Shop.UsersApi.Models
             this.Logins = new HashSet<ApplicationUserLogin>();
             this.Tokens = new HashSet<ApplicationUserToken>();
         }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public override string Id { get; set; }
         public string? FirstName { get; set; }
         public string? FullName { get; set; }
         public string? LastName { get; set; }
