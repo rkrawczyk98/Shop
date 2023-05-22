@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.V5.Pages.Account.Internal;
-//using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
-using Shop.Domain.Entities;
-using Shop.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.HttpResults;
-//using Microsoft.AspNet.Identity;
+using Shop.UsersApi.Models;
 
 namespace Shop.UsersApi.Controllers
 {

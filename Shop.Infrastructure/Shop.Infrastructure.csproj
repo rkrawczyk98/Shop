@@ -25,6 +25,8 @@
     <PackageReference Include="Moq" Version="4.18.4" />
     <PackageReference Include="NLog" Version="5.1.4" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.2.3" />
+    <PackageReference Include="OpenIddict" Version="4.3.0" />
+    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="4.3.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <PrivateAssets>all</PrivateAssets>
@@ -35,6 +37,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Shop.Application\Shop.Application.csproj" />
     <ProjectReference Include="..\Shop.Domain\Shop.Domain.csproj" />
+    <ProjectReference Include="..\Shop.ProductsApi\Shop.ProductsApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

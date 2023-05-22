@@ -31,9 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Models\" />
     <Folder Include="Core\Specifications\" />
-    <Folder Include="Enums\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Specifications\" />
   </ItemGroup>

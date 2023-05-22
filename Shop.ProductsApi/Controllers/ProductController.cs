@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shop.Application.Services;
+using Microsoft.EntityFrameworkCore;
+using Shop.Application.Core.Services;
 using Shop.Domain.Entities;
+using Shop.ProductsApi.Data;
 
 namespace Shop.ProductsApi.Controllers
 {
@@ -8,21 +10,21 @@ namespace Shop.ProductsApi.Controllers
     [Route("api/products")]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IProductService _productRepository;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(IProductService productRepository, AppDbContext context)
         {
             _productRepository = productRepository;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllProducts")]
         public ActionResult<IEnumerable<Product>> GetAllProducts()
         {
             var products = _productRepository.GetAllProducts();
             return Ok(products);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetProductById")]
         public ActionResult<Product> GetProductById(int id)
         {
             var product = _productRepository.GetProductById(id);
@@ -33,14 +35,14 @@ namespace Shop.ProductsApi.Controllers
             return Ok(product);
         }
 
-        [HttpPost]
+        [HttpPost("CreateProduct")]
         public ActionResult<Product> CreateProduct(Product product)
         {
             _productRepository.CreateProduct(product);
             return CreatedAtAction(nameof(GetProductById), new { id = product.ID }, product);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("UpdateProduct")]
         public IActionResult UpdateProduct(int id, Product product)
         {
             if (id != product.ID)
@@ -58,7 +60,7 @@ namespace Shop.ProductsApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteProduct")]
         public IActionResult DeleteProduct(int id)
         {
             if (!_productRepository.ProductExists(id))
