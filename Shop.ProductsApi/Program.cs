@@ -4,10 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Shop.ProductsApi;
 using Shop.ProductsApi.Data;
 using Shop.ProductsApi.Models;
-//using Shop.UsersApi.Services;
 using System;
-using Shop.Application.Core.Services;
-using Shop.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

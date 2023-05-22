@@ -19,10 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shop.Application\Shop.Application.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Services" />
   </ItemGroup>
 
