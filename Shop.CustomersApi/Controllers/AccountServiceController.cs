@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Shop.UsersApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Shop.UsersApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/auth")]
     public class AccountServiceController : ControllerBase
