@@ -25,7 +25,7 @@ namespace Shop.Infrastructure.DependencyResolver
             options.UseSqlServer(connectionString,
                 optionsBuilder =>
                 optionsBuilder.MigrationsAssembly(assembyName)));
-            services.AddScoped<IProductService,ProductSerivce>();
+            services.AddScoped<IProductService,ProductService>();
             services.AddScoped<IOrderService,OrderService>();
             services.AddScoped<IWarehouseSerivce, WarehouseService>();
             services.AddTransient<IContextSeed, ContextSeed>();
