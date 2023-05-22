@@ -6,23 +6,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Shop.Infrastructure.Data;
+using Shop.ProductsApi.Data;
 
 namespace Shop.Infrastructure.Services
 {
-    public class ProductSerivce : IProductService
+    public class ProductService : IProductService
     {
         private readonly HttpClient _httpClient;
         private readonly string _productServiceBaseUrl;
-
-        public ProductSerivce()
+        private readonly AppDbContext _appDbContext;
+        
+        public ProductService(AppDbContext appDbContext)
         {
             _httpClient= new HttpClient();
             _productServiceBaseUrl = "";
+            _appDbContext = appDbContext;
         }
 
         public Product CreateProduct(Product product)
         {
-            throw new NotImplementedException();
+            return new Product()
+            {
+                Category = product.Category,
+                Description = product.Description,
+                Name = product.Name,
+                Price = product.Price,
+                Stock = product.Stock,
+                ID = product.ID
+            };
         }
 
         public void DeleteProduct(int id)
