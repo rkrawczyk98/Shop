@@ -17,7 +17,7 @@ namespace Shop.ProductsApi.Data
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Category)
                 .WithMany(c => c.Products)
-                .HasForeignKey(p => p.Name);
+                .HasForeignKey(p => p.CategoryName);
 
             modelBuilder.Entity<Category>()
                 .HasKey(c => c.Name);

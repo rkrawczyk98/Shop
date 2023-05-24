@@ -5,6 +5,8 @@ using Shop.ProductsApi;
 using Shop.ProductsApi.Data;
 using Shop.ProductsApi.Models;
 using System;
+using Shop.ProductsApi.Interfaces;
+using Shop.ProductsApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,15 +16,14 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options => 
 {
     options.UseSqlServer(connectionString);
 });
 
-/////////
-//builder.Services.AddScoped<IProductService, ProductService>();
-/////////
 
 var app = builder.Build();
 

@@ -1,16 +1,14 @@
 ﻿using Shop.ProductsApi.Models;
 
-namespace Shop.ProductsApi.Interfaces
+namespace Shop.ProductsApi.Interfaces;
+
+public interface IProductService
 {
-        public interface IProductService
-        {
-            Product GetProduct(int productId);
-            IEnumerable<Product> GetAllProducts();
-            void SaveProduct(Product product);
-            Product GetProductById(int id);
-            Product CreateProduct(Product product);
-            Product UpdateProduct(Product product);
-            bool ProductExists(int productId);
-            void DeleteProduct(int id);
-        }
+    Product GetProduct(uint productId);
+    IEnumerable<Product> GetAllProducts();
+    void SaveProduct(Product product);
+    Product CreateProduct(Product product);
+    Product UpdateProduct(Product product);
+    bool ProductIdExists(uint productId);
+    void DeleteProduct(uint productId);
 }

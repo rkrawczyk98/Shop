@@ -36,29 +36,32 @@ namespace Shop.ProductsApi.Migrations
 
             modelBuilder.Entity("Shop.ProductsApi.Models.Product", b =>
                 {
-                    b.Property<long>("ProductId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ProductId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Price")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
-                    b.HasKey("ProductId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("Name");
+                    b.HasIndex("CategoryName");
 
                     b.ToTable("Products");
                 });
@@ -67,7 +70,7 @@ namespace Shop.ProductsApi.Migrations
                 {
                     b.HasOne("Shop.ProductsApi.Models.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("Name")
+                        .HasForeignKey("CategoryName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
