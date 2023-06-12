@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Shop.Domain.Entities
 {
-    public abstract class BaseEntity
+    public class ApplicationUserRole
     {
-        public string Id {get;set;}
+        public string UserId { get; set; }
+        public string RoleId { get; set;}
     }
 }

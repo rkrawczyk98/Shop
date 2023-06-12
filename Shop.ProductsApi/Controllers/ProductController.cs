@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shop.Application.Core.Services;
 using Shop.Application.Interfaces;
 using Shop.Domain.Entities;
 
@@ -34,20 +33,20 @@ namespace Shop.ProductsApi.Controllers
             return Ok(product);
         }
 
-        [HttpPost]
-        public ActionResult<Product> CreateProduct(Product product)
-        {
-            _productRepository.CreateProduct(product);
-            return CreatedAtAction(nameof(GetProductById), new { id = product.ID }, product);
-        }
+        //[HttpPost]
+        //public ActionResult<Product> CreateProduct(Product product)
+        //{
+        //    _productRepository.CreateProduct(product);
+        //    return CreatedAtAction(nameof(GetProductById), new { id = product.ID }, product);
+        //}
 
         [HttpPut("{id}")]
         public IActionResult UpdateProduct(int id, Product product)
         {
-            if (id != product.ID)
-            {
-                return BadRequest();
-            }
+            //if (id != product.ID)
+            //{
+            //    return BadRequest();
+            //}
 
             if (!_productRepository.ProductExists(id))
             {

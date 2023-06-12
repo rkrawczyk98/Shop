@@ -27,7 +27,6 @@ var appSettings = new ConfigurationBuilder()
 
 Shop.Application.DependencyResolver.DependencyResolverService.Register(builder.Services);
 Shop.Infrastructure.DependencyResolver.DependencyResolverService.Register(builder.Services, appSettings);
-
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddEndpointsApiExplorer();

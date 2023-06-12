@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shop.Application.Core.Services
+namespace Shop.Application.Interfaces
 {
     public interface IOrderService
     {

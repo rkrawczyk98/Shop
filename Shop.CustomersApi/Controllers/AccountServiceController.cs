@@ -4,12 +4,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Shop.UsersApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace Shop.UsersApi.Controllers
 {
-    [Authorize]
+
     [ApiController]
     [Route("api/auth")]
+    //[Authorize]
     public class AccountServiceController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -24,7 +32,7 @@ namespace Shop.UsersApi.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync(string userName, string password)
+        public async Task<ActionResult<ApplicationUser>> LoginAsync(string userName, string password)
         {
             var result = await _signInManager.PasswordSignInAsync(userName, password, isPersistent: false, lockoutOnFailure: false);
             if (result.Succeeded)
@@ -35,7 +43,7 @@ namespace Shop.UsersApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterUserAsync(string email, string password, string firstName, string lastName)
+        public async Task<ActionResult<ApplicationUser>> RegisterUserAsync(string email, string password, string firstName, string lastName)
         {
             var user = new ApplicationUser
             {
@@ -56,7 +64,7 @@ namespace Shop.UsersApi.Controllers
         }
 
         [HttpPost("resetPassword")]
-        public async Task<IActionResult> ResetPasswordAsync(string email, string newPassword)
+        public async Task<ActionResult<ApplicationUser>> ResetPasswordAsync(string email, string newPassword)
         {
             var user = await _userManager.FindByNameAsync(email);
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -70,62 +78,116 @@ namespace Shop.UsersApi.Controllers
 
 
         [HttpPost("addRole")]
-        public async Task<IActionResult> AddRole(string roleName)
+        public async Task<ActionResult<IdentityRole>> AddRole()
         {
-            if (await _roleManager.FindByNameAsync(roleName) == null)
+            try
             {
-                var newRole = new IdentityRole
+                using (var reader = new StreamReader(Request.Body))
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = roleName
-                };
-                var result = await _roleManager.CreateAsync(newRole);
-                if (result.Succeeded)
-                {
-                    return Ok();
-                }
-                return BadRequest(result.Errors);
+                    var requestBody = await reader.ReadToEndAsync();
+                    var data = JObject.Parse(requestBody);
+                    var roleName = data.Value<string>("roleName");
 
+                    if (await _roleManager.FindByNameAsync(roleName) == null)
+                    {
+                        var newRole = new IdentityRole
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Name = roleName
+                        };
+                        var result = await _roleManager.CreateAsync(newRole);
+                        if (result.Succeeded)
+                        {
+                            return CreatedAtAction(nameof(AddRole), newRole);
+                        }
+
+                        var errors = result.Errors.Select(e => new { e.Code, e.Description });
+                        return BadRequest(new ProblemDetails { Title = "Failed to create role", Detail = "Role creation failed.", Status = 400, Extensions = { ["errors"] = errors } });
+                    }
+                    else
+                    {
+                        return BadRequest("Role already exists.");
+                    }
+                }
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
         }
 
-        [HttpPost("removeUserFromRole")]
-        public async Task<IActionResult> RemoveUserFromRole(string userName, string roleName)
+        [HttpDelete("removeUserFromRole")]
+        public async Task<ActionResult<ApplicationUser>> RemoveUserFromRole() //być może ta metoda będzie miała zwracać coś innego
         {
-            ApplicationUser user = await _userManager.FindByNameAsync(userName);
-            IdentityRole role = await _roleManager.FindByNameAsync(roleName);
-            if (role != null && user != null)
+            try
             {
-                if(!await _userManager.IsInRoleAsync(user, roleName))
+                using (var reader = new StreamReader(Request.Body))
                 {
+                    var requestBody = await reader.ReadToEndAsync();
+                    var data = JObject.Parse(requestBody);
+                    var userName = data.Value<string>("userName");
+                    var roleName = data.Value<string>("roleName");
+
+                    ApplicationUser user = await _userManager.FindByNameAsync(userName);
+                    IdentityRole role = await _roleManager.FindByNameAsync(roleName);
+                    if (role != null && user != null)
+                    {
+                        if (!await _userManager.IsInRoleAsync(user, roleName))
+                        {
+                            return BadRequest();
+                        }
+                        var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+                        if (result.Succeeded)
+                        {
+                            return Ok();
+                        }
+                        var errors = result.Errors.Select(e => new { e.Code, e.Description });
+                        return BadRequest(new ProblemDetails { Title = "Failed to create role", Detail = "Role creation failed.", Status = 400, Extensions = { ["errors"] = errors } });
+                    }
                     return BadRequest();
                 }
-                var result = await _userManager.RemoveFromRoleAsync(user, roleName);
-                if (result.Succeeded)
-                {
-                    return Ok();
-                }
-                return BadRequest(result.Errors);
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
         }
 
-        [HttpPost("addRoleToUser")]
-        public async Task<IActionResult> AddRoleToUser(string userName, string roleName)
+        [HttpPut("addRoleToUser")]
+        public async Task<ActionResult<ApplicationUser>> AddRoleToUser() //być może ta metoda będzie miała zwracać coś innego
         {
-            ApplicationUser user = await _userManager.FindByNameAsync(userName);
-            IdentityRole role = await _roleManager.FindByNameAsync(roleName);
-            if (role != null && user != null && !await _userManager.IsInRoleAsync(user, roleName))
+            try
             {
-                var result = await _userManager.AddToRoleAsync(user, roleName);
-                if (result.Succeeded)
+                using (var reader = new StreamReader(Request.Body))
                 {
-                    return Ok();
+                    var requestBody = await reader.ReadToEndAsync();
+                    var data = JObject.Parse(requestBody);
+                    var userName = data.Value<string>("userName");
+                    var roleName = data.Value<string>("roleName");
+
+                    ApplicationUser user = await _userManager.FindByNameAsync(userName);
+                    IdentityRole role = await _roleManager.FindByNameAsync(roleName);
+                    if (role != null && user != null && !await _userManager.IsInRoleAsync(user, roleName))
+                    {
+                        var result = await _userManager.AddToRoleAsync(user, roleName);
+                        if (result.Succeeded)
+                        {
+                            return CreatedAtAction(nameof(AddRoleToUser), user);
+                        }
+                        var errors = result.Errors.Select(e => new { e.Code, e.Description });
+                        return BadRequest(new ProblemDetails { Title = "Failed to create role", Detail = "Role creation failed.", Status = 400, Extensions = { ["errors"] = errors } });
+                    }
+                    return BadRequest();
                 }
-                return BadRequest(result.Errors);
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+
         }
     }
 }

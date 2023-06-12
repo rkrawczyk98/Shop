@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Infrastructure.Services
 {
-    public class RoleService : IRoleService
+    public class RoleService 
     {
 
     }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shop.Application.Core.Services
+namespace Shop.Application.Models.Requests
 {
-    public interface IWarehouseSerivce
+    public class CreateRole
     {
-
+        public string RoleName { get; set; }
     }
 }

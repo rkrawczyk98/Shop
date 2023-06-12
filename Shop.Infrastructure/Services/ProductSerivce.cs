@@ -1,5 +1,4 @@
-﻿using Shop.Application.Core.Services;
-using Shop.Application.Interfaces;
+﻿using Shop.Application.Interfaces;
 using Shop.Domain.Entities;
 using System;
 using System.Collections.Generic;

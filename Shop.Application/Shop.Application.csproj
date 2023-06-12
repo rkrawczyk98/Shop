@@ -36,12 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Models\" />
-    <Folder Include="Core\Repositories\" />
     <Folder Include="DependencyResolver\" />
-    <Folder Include="Models\DTOs\" />
     <Folder Include="Models\Responses\" />
-    <Folder Include="Models\Requests\" />
   </ItemGroup>
 
 </Project>

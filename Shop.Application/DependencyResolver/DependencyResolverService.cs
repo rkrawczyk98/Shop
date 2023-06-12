@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shop.Application.Interfaces;
-using Shop.Infrastructure.Services;
+using Shop.Application.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,11 @@ namespace Shop.Application.DependencyResolver
     {
         public static void Register(IServiceCollection services) 
         {
-            services.AddScoped<IAccountService, AccountService>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddHttpClient<IRoleService, RoleService>(); // nie wiem ktory i co
+            services.AddHttpClient<IUserService, UserService>();
         }
 
 
