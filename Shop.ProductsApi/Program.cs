@@ -5,6 +5,7 @@ using Shop.ProductsApi;
 using Shop.ProductsApi.Data;
 using Shop.ProductsApi.Models;
 using System;
+using System.Text.Json.Serialization;
 using Shop.ProductsApi.Interfaces;
 using Shop.ProductsApi.Services;
 
@@ -13,7 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IProductService, ProductService>();
