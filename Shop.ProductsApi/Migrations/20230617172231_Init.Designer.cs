@@ -11,8 +11,8 @@ using Shop.ProductsApi.Data;
 namespace Shop.ProductsApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230524172933_init")]
-    partial class init
+    [Migration("20230617172231_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

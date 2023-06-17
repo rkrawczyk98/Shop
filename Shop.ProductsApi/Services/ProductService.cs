@@ -44,7 +44,15 @@ namespace Shop.ProductsApi.Services
             {
                 throw new Exception("Product does not exist.");
             }
-            return _appDbContext.Products.FirstOrDefault(p=>p.Id == productId);
+            
+            var result = _appDbContext.Products
+                .Include(p=>p.Category)
+                .FirstOrDefault(p=>p.Id == productId);
+            
+            if (result == null)
+                throw new Exception("Product is null");
+            
+            return result;
         }
 
         public IEnumerable<Product> GetAllProducts()

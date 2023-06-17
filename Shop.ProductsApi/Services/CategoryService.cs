@@ -1,4 +1,5 @@
-﻿using Shop.ProductsApi.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Shop.ProductsApi.Data;
 using Shop.ProductsApi.Interfaces;
 using Shop.ProductsApi.Models;
 
@@ -34,7 +35,14 @@ public class CategoryService : ICategoryService
         {
             throw new Exception("Category does not exist.");
         }
-        return _appDbContext.Categories.FirstOrDefault(c => c.Name == categoryName);
+
+        var result = _appDbContext.Categories
+            .Include(c=>c.Products)
+            .FirstOrDefault(c => c.Name == categoryName);
+        if (result == null)
+            throw new Exception("Category is null");
+
+        return result;
     }
 
     public IEnumerable<Category> GetAllCategories()

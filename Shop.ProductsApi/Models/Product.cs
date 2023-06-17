@@ -1,5 +1,6 @@
 ﻿namespace Shop.ProductsApi.Models
 {
+#pragma warning disable CS8618
     public class Product
     {
         public uint Id { get; set; }
@@ -11,3 +12,4 @@
         public int Stock { get; set; }
     }
 }
+#pragma warning restore CS8618
