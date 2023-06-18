@@ -39,10 +39,23 @@ namespace Shop.Application.Services
             }
         }
 
-        public async Task<ActionResult<ApplicationRole>> AddRoleToUser(string userName, string roleName)
+        public async Task<ActionResult<ApplicationUser>> AddRoleToUser(string userName, string roleName)
         {
-            HttpResponseMessage response = await _client.GetAsync("http://localhost:5170/api/auth/addRoleToUser");
-            throw new NotImplementedException();
+            try
+            {
+                var data = new JObject { ["userName"] = userName, ["roleName"] = roleName };
+                var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await _client.PutAsync("http://localhost:5170/api/auth/addRoleToUser", contentdata);
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var user = JsonConvert.DeserializeObject<ApplicationUser>(responseContent);
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
         }
 
         public async Task<ActionResult<ApplicationRole>> RemoveUserFromRole(string userName, string roleName)

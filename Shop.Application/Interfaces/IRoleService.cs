@@ -13,7 +13,7 @@ namespace Shop.Application.Interfaces
     {
         public Task<ActionResult<ApplicationRole>> AddRole(string roleNam);
         public Task<ActionResult<ApplicationRole>> RemoveUserFromRole(string userName, string roleName);
-        public Task<ActionResult<ApplicationRole>> AddRoleToUser(string userName, string roleName);
+        public Task<ActionResult<ApplicationUser>> AddRoleToUser(string userName, string roleName);
 
     }
 }

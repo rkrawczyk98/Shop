@@ -26,7 +26,7 @@ namespace Shop.Infrastructure.DependencyResolver
                 optionsBuilder.MigrationsAssembly(assembyName)));
             services.AddScoped<IProductService,ProductSerivce>();
             services.AddScoped<IOrderService,OrderService>();
-            services.AddTransient<IContextSeed, ContextSeed>();
+            //services.AddTransient<IContextSeed, ContextSeed>();
         }
 
         public static async void MigrateDatabase(IServiceProvider serviceProvider)
