@@ -12,12 +12,10 @@ public class CategoryService : ICategoryService
         
     public CategoryService(AppDbContext appDbContext)
     {
-        _categoryServiceBaseUrl = "";
         _appDbContext = appDbContext;
     }
     public Category CreateCategory(Category category)
     {
-        var url = $"{_categoryServiceBaseUrl}/";
         if (CategoryExists(category.Name))
         {
             throw new Exception("Category with that name already exists.");
@@ -30,7 +28,6 @@ public class CategoryService : ICategoryService
 
     public Category GetCategory(string categoryName)
     {
-        var url = $"{_categoryServiceBaseUrl}/";
         if (!CategoryExists(categoryName))
         {
             throw new Exception("Category does not exist.");
@@ -47,13 +44,11 @@ public class CategoryService : ICategoryService
 
     public IEnumerable<Category> GetAllCategories()
     {
-        var url = $"{_categoryServiceBaseUrl}/";
         return _appDbContext.Categories;
     }
 
     public void SaveCategory(Category category)
     {
-        var url = $"{_categoryServiceBaseUrl}/";
         if (CategoryExists(category.Name))
         {
             UpdateCategory(category);
@@ -67,7 +62,6 @@ public class CategoryService : ICategoryService
 
     public Category UpdateCategory(Category category)
     {
-        var url = $"{_categoryServiceBaseUrl}/";
 
         if (!CategoryExists(category.Name))
         {
@@ -90,7 +84,6 @@ public class CategoryService : ICategoryService
 
     public void DeleteCategory(string categoryName)
     {
-        var url = $"{_categoryServiceBaseUrl}/";
         if (!CategoryExists(categoryName))
         {
             throw new Exception("Category does not exist.");
@@ -100,7 +93,6 @@ public class CategoryService : ICategoryService
     }
     public bool CategoryExists(string categoryName)
     {
-        var url = $"{_categoryServiceBaseUrl}/";
         return _appDbContext.Categories.Any(c => c.Name == categoryName);
     }
 }
