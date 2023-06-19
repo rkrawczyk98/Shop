@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shop.Application.Interfaces;
-using Shop.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Shop.ProductsApi.Data;
+using Shop.ProductsApi.Interfaces;
+using Shop.ProductsApi.Models;
+using Shop.ProductsApi.Services;
 
 namespace Shop.ProductsApi.Controllers
 {
@@ -8,24 +11,23 @@ namespace Shop.ProductsApi.Controllers
     [Route("api/products")]
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _productRepository;
-
-        public ProductController(IProductService productRepository)
+        private readonly IProductService _productService;
+        public ProductController(IProductService productService)
         {
-            _productRepository = productRepository;
+            _productService = productService;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllProducts")]
         public ActionResult<IEnumerable<Product>> GetAllProducts()
         {
-            var products = _productRepository.GetAllProducts();
+            var products = _productService.GetAllProducts();
             return Ok(products);
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<Product> GetProductById(int id)
+        [HttpGet("GetProductById")]
+        public ActionResult<Product> GetProductById(uint id)
         {
-            var product = _productRepository.GetProductById(id);
+            var product = _productService.GetProduct(id);
             if (product == null)
             {
                 return NotFound();
@@ -33,42 +35,51 @@ namespace Shop.ProductsApi.Controllers
             return Ok(product);
         }
 
-        //[HttpPost]
-        //public ActionResult<Product> CreateProduct(Product product)
-        //{
-        //    _productRepository.CreateProduct(product);
-        //    return CreatedAtAction(nameof(GetProductById), new { id = product.ID }, product);
-        //}
-
-        [HttpPut("{id}")]
-        public IActionResult UpdateProduct(int id, Product product)
+        [HttpPost("CreateProduct")]
+        public ActionResult<Product> CreateProduct(string name, string description, decimal price, int stock, string categoryName)
         {
-            //if (id != product.ID)
-            //{
-            //    return BadRequest();
-            //}
+            
+            var newProduct = _productService.CreateProduct(new Product()
+            {
+                Name = name,
+                Description = description,
+                Price = price,
+                Stock = stock,
+                CategoryName = categoryName,
+            });
+            return Created($"api/products/{newProduct.Id}", newProduct);
+        }
 
-            if (!_productRepository.ProductExists(id))
+        [HttpPut("UpdateProduct")]
+        public IActionResult UpdateProduct(uint id, Product product)
+        {
+            if (id != product.Id)
+            {
+                return BadRequest();
+            }
+
+            if (!_productService.ProductIdExists(id))
             {
                 return NotFound();
             }
 
-            _productRepository.UpdateProduct(product);
+            _productService.UpdateProduct(product);
 
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteProduct(int id)
+        [HttpDelete("DeleteProduct")]
+        public IActionResult DeleteProduct(uint id)
         {
-            if (!_productRepository.ProductExists(id))
+            if (!_productService.ProductIdExists(id))
             {
                 return NotFound();
             }
 
-            _productRepository.DeleteProduct(id);
+            _productService.DeleteProduct(id);
 
             return NoContent();
         }
+        
     }
 }

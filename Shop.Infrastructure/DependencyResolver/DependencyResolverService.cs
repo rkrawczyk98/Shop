@@ -10,6 +10,8 @@ using Shop.Domain.Entities;
 using Shop.Infrastructure.Data;
 using Shop.Infrastructure.Data.Seeding;
 using Shop.Infrastructure.Services;
+using Shop.ProductsApi.Services;
+
 //using Shop.Infrastructure.Repositories;
 
 namespace Shop.Infrastructure.DependencyResolver
@@ -24,7 +26,7 @@ namespace Shop.Infrastructure.DependencyResolver
             options.UseSqlServer(connectionString,
                 optionsBuilder =>
                 optionsBuilder.MigrationsAssembly(assembyName)));
-            services.AddScoped<IProductService,ProductSerivce>();
+            services.AddScoped<ProductService>();
             services.AddScoped<IOrderService,OrderService>();
             //services.AddTransient<IContextSeed, ContextSeed>();
         }

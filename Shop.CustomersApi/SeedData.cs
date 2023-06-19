@@ -1,11 +1,11 @@
-﻿//using Microsoft.AspNet.Identity;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNet.Identity;
+//using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Validations;
 using Shop.UsersApi.Data;
+using Shop.UsersApi.Interfaces;
 using Shop.UsersApi.Models;
+//using Shop.UsersApi.Services;
 
 namespace Shop.UsersApi
 {
@@ -16,56 +16,117 @@ namespace Shop.UsersApi
             var context = scope.ServiceProvider.GetRequiredService<ShopDbContext>();
             await context.Database.MigrateAsync().ConfigureAwait(false);
             var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            var roleMenager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-            if (!await roleMenager.RoleExistsAsync("Admin"))
+            var roleMenager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+            //var userRoleMaanger = scope.ServiceProvider.GetRequiredService<IdentityUserRole<>>
+            var admin = await userMgr.FindByNameAsync("admin");
+            var user = await userMgr.FindByNameAsync("user");
+            if (admin == null || user == null)
             {
-                var CreatingRole = new IdentityRole();
-                CreatingRole.Id= Guid.NewGuid().ToString();
-                CreatingRole.Name = "Admin";
-                await roleMenager.CreateAsync(CreatingRole);
+                logger.LogInformation("Generating inbuilt accounts");
+
+                if (admin != null)
+                {
+                    var Admin = new ApplicationUser
+                    {
+                        UserName = "admin",
+                        Email = "admin@admin.pl",
+                        EmailConfirmed = true,
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        CreatedOn = DateTime.Now,
+                        Password = "admin",
+                        FirstName= "admin",
+                        LastName= "admin"
+                    };
+                    var result = userMgr.CreateAsync(Admin, "admin").Result;
+
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception(result.Errors.ToString());
+                    }
+                    context.Users.Add(Admin);
+                    logger.LogDebug("Admin created");
+                }
+                else logger.LogDebug("User named 'admin' alredy exist.");
+
+                if (user != null)
+                {
+                    var User = new ApplicationUser 
+                    {
+                        UserName = "user",
+                        Email = "user@user.pl",
+                        EmailConfirmed = true,
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        CreatedOn = DateTime.Now,
+                        Password = "user",
+                        FirstName = "user",
+                        LastName = "user"
+                    };
+                    var result = userMgr.CreateAsync(User, "user").Result;
+
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception(result.Errors.ToString());
+                    }
+                    context.Users.Add(User);
+                    logger.LogDebug("User created");
+                }
+                else logger.LogDebug("User named 'user' already exist.");
+
+                logger.LogInformation("Inbuilt account generation completed");
             }
 
-            if (!await roleMenager.RoleExistsAsync("User"))
+            if (await roleMenager.FindByNameAsync("Admin") == null)
             {
-                var CreatingRole = new IdentityRole();
-                CreatingRole.Id = Guid.NewGuid().ToString();
-                CreatingRole.Name = "Basic";
-                CreatingRole.NormalizedName = "BASIC";
-                await roleMenager.CreateAsync(CreatingRole);
+                var adminRole = new ApplicationRole 
+                {
+                    Name = "Admin",
+                    CreatedOn= DateTime.Now
+                };
+                var result = await roleMenager.CreateAsync(adminRole);
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.ToString());
+                }
+                context.Roles.Add(adminRole);
             }
 
-            if (await userMgr.FindByNameAsync("admin") == null)
+            if (await roleMenager.FindByNameAsync("Basic") == null)
             {
-                var CreatingUser = new ApplicationUser();
-                CreatingUser.Id = Guid.NewGuid().ToString();
-                CreatingUser.EmailConfirmed = true;
-                CreatingUser.Email = "admin@admin.pl";
-                CreatingUser.FirstName = "Admin";
-                CreatingUser.UserName = "admin";
-                CreatingUser.LastName = "Admin";
-                CreatingUser.PhoneNumber = "1234567890";
-                CreatingUser.LockoutEnabled = false;
-                CreatingUser.TwoFactorEnabled = false;
-                await userMgr.CreateAsync(CreatingUser,"Admin123!");
-                await userMgr.AddToRoleAsync(CreatingUser, "Admin");
+                var basicRole = new ApplicationRole
+                {
+                    Name = "Basic",
+                    CreatedOn = DateTime.Now
+                };
+                var result = await roleMenager.CreateAsync(basicRole);
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.ToString());
+                }
+                context.Roles.Add(basicRole);
             }
 
-            if (await userMgr.FindByNameAsync("user") == null)
+            if ((userMgr.IsInRoleAsync(admin.Id.ToString(),"Admin")) == null) // Być może trzeba będzie dodać context.. cośtam Add/Update
             {
-                var CreatingUser = new ApplicationUser();
-                CreatingUser.Id = Guid.NewGuid().ToString();
-                CreatingUser.EmailConfirmed = true;
-                CreatingUser.Email = "user@user.pl";
-                CreatingUser.FirstName = "User";
-                CreatingUser.UserName = "user";
-                CreatingUser.LastName = "User";
-                CreatingUser.PhoneNumber = "1234567890";
-                CreatingUser.LockoutEnabled = false;
-                CreatingUser.TwoFactorEnabled = false;
-                await userMgr.CreateAsync(CreatingUser, "User123!");
-                await userMgr.AddToRoleAsync(CreatingUser, "Basic");
+                var result = await userMgr.AddToRoleAsync(admin.Id.ToString(), "Admin");
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.ToString());
+                }
             }
+
+            if ((userMgr.IsInRoleAsync(user.Id.ToString(), "Basic")) == null) // Być może trzeba będzie dodać context.. cośtam Add/Update
+            {
+                var result = await userMgr.AddToRoleAsync(user.Id.ToString(), "Basic");
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.ToString());
+                }
+            }
+
+            
+            await context.SaveChangesAsync();
         }
     }
 }
