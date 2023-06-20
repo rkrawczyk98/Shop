@@ -39,12 +39,8 @@ namespace Shop.OrdersApi.Migrations
                     b.Property<DateTime>("DateOfPlacing")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Products")
-                        .IsRequired()
+                    b.Property<string>("OrderProducts")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("OrderId");
 

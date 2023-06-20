@@ -27,7 +27,7 @@ namespace Shop.OrdersApi.Controllers
             return Created($"api/orders/{createdOrder.OrderId}", createdOrder);
         }
 
-        [HttpGet("{OrderId}")]
+        [HttpGet("{orderId}")]
         public ActionResult<Order> GetOrder(uint orderId)
         {
             if (!_orderService.OrderExists(orderId))
@@ -37,11 +37,24 @@ namespace Shop.OrdersApi.Controllers
             var order = _orderService.GetOrder(orderId);
             return Ok(order);
         }
+        
 
         [HttpGet("GetAllOrders")]
         public ActionResult<IEnumerable<Order>> GetAllOrders() => Ok(_orderService.GetAllOrders());
 
-        [HttpPut("Update/{OrderId}")]
+        [HttpPut("AddProductToOrder/{orderId}/{productId}")]
+        public ActionResult<Order> AddProductToOrder(uint orderId, uint productId)
+        {
+            if (!_orderService.OrderExists(orderId))
+            {
+                return NotFound($"Order of given Id = {orderId} does not exist.");
+            }
+
+            _orderService.AddProductToOrder(orderId, productId);
+            return Accepted($"api/orders/{orderId}/{productId}");
+        }
+        
+        [HttpPut("Update/{orderId}")]
         public ActionResult<Order> UpdateOrder(uint orderId, Order order)
         {
             if (orderId != order.OrderId)
@@ -55,18 +68,57 @@ namespace Shop.OrdersApi.Controllers
             }
 
             var updatedOrder = _orderService.UpdateOrder(order);
-            return Accepted($"api/orders/{order.OrderId}", order);
+            return Accepted($"api/orders/{updatedOrder.OrderId}", updatedOrder);
         }
 
-        [HttpDelete("Delete/{OrderId}")]
+        [HttpDelete("Delete/{orderId}")]
         public ActionResult DeleteOrder(uint orderId)
         {
             if (!_orderService.OrderExists(orderId))
                 return NotFound($"Order of given ID = {orderId} does not exist.");
             
             _orderService.DeleteOrder(orderId);
-
             return Ok($"api/orders/{orderId}");
+        }
+
+        [HttpPut("Complete/{orderId}")]
+        public ActionResult CompleteOrder(uint orderId)
+        {
+            if (!_orderService.OrderExists(orderId))
+            {
+                return NotFound($"Order of given ID = {orderId} does not exist.");
+            }
+
+            var order = _orderService.GetOrder(orderId);
+            
+            if (order.DateOfCompletion != null)
+            {
+                return BadRequest($"Order of given ID = {orderId} is already completed.");
+            }
+            
+            _orderService.CompleteOrder(orderId);
+            return Accepted($"api/orders/{order.OrderId}");
+
+        }
+        
+        [HttpPut("Uncomplete/{orderId}")]
+        public ActionResult UncompleteOrder(uint orderId)
+        {
+            if (!_orderService.OrderExists(orderId))
+            {
+                return NotFound($"Order of given ID = {orderId} does not exist.");
+            }
+
+            var order = _orderService.GetOrder(orderId);
+            
+            if (order.DateOfCompletion == null)
+            {
+                return BadRequest($"Order of given ID = {orderId} is not completed");
+            }
+
+            _orderService.UncompleteOrder(orderId);
+            return Accepted($"api/orders/{order.OrderId}");
+
         }
     }
 }

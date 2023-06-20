@@ -4,11 +4,13 @@ namespace Shop.OrdersApi.Interfaces;
 
 public interface IOrderService
 {
+    Order CreateOrder(Order order);
+    void AddProductToOrder(uint orderId, uint productId);
+    void CompleteOrder(uint orderId);
+    void UncompleteOrder(uint orderId);
     Order GetOrder(uint orderId);
     IEnumerable<Order> GetAllOrders();
-    void SaveOrder(Order order);
-    Order CreateOrder(Order order);
     Order UpdateOrder(Order order);
-    bool OrderExists(uint orderId);
     void DeleteOrder(uint orderId);
+    bool OrderExists(uint orderId);
 }

@@ -20,8 +20,7 @@ namespace Shop.OrdersApi.Migrations
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DateOfPlacing = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateOfCompletion = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Products = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    OrderProducts = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

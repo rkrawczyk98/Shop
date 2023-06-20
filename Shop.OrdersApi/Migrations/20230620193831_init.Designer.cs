@@ -12,7 +12,7 @@ using Shop.OrdersApi.Data;
 namespace Shop.OrdersApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230619191327_init")]
+    [Migration("20230620193831_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -42,12 +42,8 @@ namespace Shop.OrdersApi.Migrations
                     b.Property<DateTime>("DateOfPlacing")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Products")
-                        .IsRequired()
+                    b.Property<string>("OrderProducts")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("OrderId");
 

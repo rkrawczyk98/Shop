@@ -15,7 +15,7 @@ namespace Shop.OrdersApi.Data
         {
             modelBuilder.Entity<Order>()
                 .HasKey(o => o.OrderId);
-            
+
             base.OnModelCreating(modelBuilder);
         }
     }

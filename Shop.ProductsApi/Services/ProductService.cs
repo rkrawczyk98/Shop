@@ -18,13 +18,11 @@ namespace Shop.ProductsApi.Services
         
         public ProductService(AppDbContext appDbContext)
         {
-            _productServiceBaseUrl = "";
             _appDbContext = appDbContext;
         }
 
         public Product CreateProduct(Product product)
         {
-            var url = $"{_productServiceBaseUrl}/";
             if (ProductIdExists(product.Id))
             {
                 throw new Exception("Product of that ID already exists.");
@@ -39,7 +37,6 @@ namespace Shop.ProductsApi.Services
 
         public Product GetProduct(uint productId)
         {
-            var url = $"{_productServiceBaseUrl}/";
             if (!ProductIdExists(productId))
             {
                 throw new Exception("Product does not exist.");
@@ -57,12 +54,10 @@ namespace Shop.ProductsApi.Services
 
         public IEnumerable<Product> GetAllProducts()
         {
-            var url = $"{_productServiceBaseUrl}/"; // dodać reszte adresu do metody w mikroserwisie 
             return _appDbContext.Products;
         }
         public void SaveProduct(Product product)
         {
-            var url = $"{_productServiceBaseUrl}/";
             if (ProductIdExists(product.Id))
             {
                 UpdateProduct(product);
@@ -74,7 +69,6 @@ namespace Shop.ProductsApi.Services
         }
         public Product UpdateProduct(Product product)
         {
-            var url = $"{_productServiceBaseUrl}/";
             if (!ProductIdExists(product.Id))
             {
                 throw new Exception("Product of that ID does not exist.");
@@ -98,7 +92,6 @@ namespace Shop.ProductsApi.Services
         }
         public void DeleteProduct(uint id)
         {
-            var url = $"{_productServiceBaseUrl}/";
             if (!ProductIdExists(id))
             {
                 throw new Exception("Product does not exist.");
@@ -109,7 +102,6 @@ namespace Shop.ProductsApi.Services
         }
         public bool ProductIdExists(uint productId)
         {
-            var url = $"{_productServiceBaseUrl}/";
             return _appDbContext.Products.Any(p => p.Id == productId);
         }
     }
