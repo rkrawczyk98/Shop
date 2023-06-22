@@ -64,17 +64,13 @@ namespace ApiDoTestow.Controllers
         }
 
         [HttpDelete("removeUserFromRole")]
-        public async Task<ActionResult<ApplicationUser>> UsuwanieUzytkownikaZRoli(string userName, string roleName) //byæ mo¿e ta metoda bêdzie mia³a zwracaæ coœ innego
+        public async Task<ActionResult> UsuwanieUzytkownikaZRoli(string userName, string roleName) //byæ mo¿e ta metoda bêdzie mia³a zwracaæ coœ innego
         {
             try
             {
-                var data = new JObject { ["userName"] = userName, ["roleName"] = roleName };
-                var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _client.DeleteAsync("http://localhost:5170/api/auth/removeUserFromRole"/*, contentdata*/);
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var user = JsonConvert.DeserializeObject<ApplicationUser>(responseContent);
+                HttpResponseMessage response = await _client.DeleteAsync($"http://localhost:5170/api/auth/removeUserFromRole?userName={userName}&roleName={roleName}");
 
-                return Ok(user);
+                return Ok();
             }
             catch (Exception ex)
             {

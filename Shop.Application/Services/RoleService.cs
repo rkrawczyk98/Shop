@@ -39,7 +39,7 @@ namespace Shop.Application.Services
             }
         }
 
-        public async Task<ActionResult<ApplicationUserRole>> AddRoleToUser(string userName, string roleName)
+        public async Task<ActionResult<ApplicationUser>> AddRoleToUser(string userName, string roleName)//ApplicationUserRole
         {
             try
             {
@@ -47,9 +47,9 @@ namespace Shop.Application.Services
                 var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _client.PutAsync("http://localhost:5170/api/auth/addRoleToUser", contentdata);
                 var responseContent = await response.Content.ReadAsStringAsync();
-                var userrole = JsonConvert.DeserializeObject<ApplicationUserRole>(responseContent);
+                var user = JsonConvert.DeserializeObject<ApplicationUser>(responseContent);
 
-                return userrole;
+                return user;
             }
             catch (Exception ex)
             {
@@ -58,24 +58,19 @@ namespace Shop.Application.Services
             }
         }
 
-        public async Task<ActionResult<ApplicationUserRole>> RemoveUserFromRole(string userName, string roleName)
+        public async Task<ActionResult> RemoveUserFromRole(string userName, string roleName)//ApplicationUserRole
         {
             try
             {
-                //var data = new JObject { ["userName"] = userName, ["roleName"] = roleName };
-                //var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                var url = "http://localhost:5170/api/auth/removeUserFromRole/";
-                HttpResponseMessage response = await _client.DeleteAsync(url + userName + roleName);
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var userrole = JsonConvert.DeserializeObject<ApplicationUserRole>(responseContent);
+                HttpResponseMessage response = await _client.DeleteAsync($"http://localhost:5170/api/auth/removeUserFromRole?userName={userName}&roleName={roleName}");
 
-                return userrole;
+                return null;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
                 return null;
             }
-}
+        }
     }
 }

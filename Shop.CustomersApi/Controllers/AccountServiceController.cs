@@ -118,17 +118,10 @@ namespace Shop.UsersApi.Controllers
         }
 
         [HttpDelete("removeUserFromRole")]
-        public async Task<ActionResult<IdentityUserRole<string>>> RemoveUserFromRole(string userName, string roleName) //być może ta metoda będzie miała zwracać coś innego
+        public async Task<ActionResult> RemoveUserFromRole(string userName, string roleName) //być może ta metoda będzie miała zwracać coś innego
         {
             try
             {
-                //using (var reader = new StreamReader(Request.Body))
-                //{
-                //    var requestBody = await reader.ReadToEndAsync();
-                //    var data = JObject.Parse(requestBody);
-                //    var userName = data.Value<string>("userName");
-                //    var roleName = data.Value<string>("roleName");
-
                     ApplicationUser user = await _userManager.FindByNameAsync(userName);
                     IdentityRole role = await _roleManager.FindByNameAsync(roleName);
                     if (role != null && user != null)
