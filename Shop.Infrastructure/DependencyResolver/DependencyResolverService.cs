@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Shop.Application.Core.Services;
 using Shop.Application.Interfaces;
 using Shop.Domain.Entities;
 using Shop.Infrastructure.Data;
@@ -29,8 +28,7 @@ namespace Shop.Infrastructure.DependencyResolver
                 optionsBuilder.MigrationsAssembly(assembyName)));
             services.AddScoped<ProductService>();
             services.AddScoped<IOrderService,OrderService>();
-            services.AddScoped<IWarehouseSerivce, WarehouseService>();
-            services.AddTransient<IContextSeed, ContextSeed>();
+            //services.AddTransient<IContextSeed, ContextSeed>();
         }
 
         public static async void MigrateDatabase(IServiceProvider serviceProvider)

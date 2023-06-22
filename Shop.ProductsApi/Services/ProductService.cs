@@ -13,7 +13,6 @@ namespace Shop.ProductsApi.Services
 {
     public class ProductService : IProductService
     {
-        private readonly string _productServiceBaseUrl;
         private readonly AppDbContext _appDbContext;
         
         public ProductService(AppDbContext appDbContext)
@@ -37,7 +36,10 @@ namespace Shop.ProductsApi.Services
 
         public Product GetProduct(uint productId)
         {
+
             if (!ProductIdExists(productId))
+           //var existingProduct = GetProduct(id);
+           // if (existingProduct == null)
             {
                 throw new Exception("Product does not exist.");
             }
@@ -56,6 +58,21 @@ namespace Shop.ProductsApi.Services
         {
             return _appDbContext.Products;
         }
+
+
+//        public Product GetProduct(uint productId)
+//        {
+//            if (!ProductIdExists(productId))
+//            {
+//                throw new Exception("Product does not exist.");
+//            }
+//            return _appDbContext.Products.Find(productId);
+//        }
+//        
+//        public bool ProductIdExists(uint productId)
+//        {
+//            return _appDbContext.Products.Any(p => p.Id == productId);
+//        }
         public void SaveProduct(Product product)
         {
             if (ProductIdExists(product.Id))
@@ -69,6 +86,7 @@ namespace Shop.ProductsApi.Services
         }
         public Product UpdateProduct(Product product)
         {
+
             if (!ProductIdExists(product.Id))
             {
                 throw new Exception("Product of that ID does not exist.");
@@ -77,6 +95,11 @@ namespace Shop.ProductsApi.Services
             if (existingProduct == null)
             {
                 throw new Exception("Product of that ID is null.");
+
+            //var existingProduct = GetProduct(product.Id);
+            //if (existingProduct == null)
+            //{
+                //throw new Exception("Product does not exist.");
             }
 
             existingProduct.Name = product.Name;

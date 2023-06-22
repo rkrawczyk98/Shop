@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shop.Domain.Entities
+namespace Shop.Application.Models.Requests
 {
-    public abstract class BaseEntity
+    public class GetAllUsers
     {
-        public string Id {get;set;}
+
     }
 }
