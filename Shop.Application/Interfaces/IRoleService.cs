@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shop.Application.Models.Requests;
 using Shop.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,8 +11,8 @@ namespace Shop.Application.Interfaces
     public interface IRoleService
     {
         public Task<ActionResult<ApplicationRole>> AddRole(string roleNam);
-        public Task<ActionResult<ApplicationRole>> RemoveUserFromRole(string userName, string roleName);
-        public Task<ActionResult<ApplicationUser>> AddRoleToUser(string userName, string roleName);
+        public Task<ActionResult<ApplicationUserRole>> RemoveUserFromRole(string userName, string roleName);
+        public Task<ActionResult<ApplicationUserRole>> AddRoleToUser(string userName, string roleName);
 
     }
 }

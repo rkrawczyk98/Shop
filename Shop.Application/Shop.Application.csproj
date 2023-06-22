@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\Responses\**" />
+    <EmbeddedResource Remove="Models\Responses\**" />
+    <None Remove="Models\Responses\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="3.2.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -37,7 +43,6 @@
 
   <ItemGroup>
     <Folder Include="DependencyResolver\" />
-    <Folder Include="Models\Responses\" />
   </ItemGroup>
 
 </Project>

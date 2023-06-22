@@ -118,16 +118,16 @@ namespace Shop.UsersApi.Controllers
         }
 
         [HttpDelete("removeUserFromRole")]
-        public async Task<ActionResult<ApplicationUser>> RemoveUserFromRole() //być może ta metoda będzie miała zwracać coś innego
+        public async Task<ActionResult<IdentityUserRole<string>>> RemoveUserFromRole(string userName, string roleName) //być może ta metoda będzie miała zwracać coś innego
         {
             try
             {
-                using (var reader = new StreamReader(Request.Body))
-                {
-                    var requestBody = await reader.ReadToEndAsync();
-                    var data = JObject.Parse(requestBody);
-                    var userName = data.Value<string>("userName");
-                    var roleName = data.Value<string>("roleName");
+                //using (var reader = new StreamReader(Request.Body))
+                //{
+                //    var requestBody = await reader.ReadToEndAsync();
+                //    var data = JObject.Parse(requestBody);
+                //    var userName = data.Value<string>("userName");
+                //    var roleName = data.Value<string>("roleName");
 
                     ApplicationUser user = await _userManager.FindByNameAsync(userName);
                     IdentityRole role = await _roleManager.FindByNameAsync(roleName);
@@ -143,10 +143,10 @@ namespace Shop.UsersApi.Controllers
                             return Ok();
                         }
                         var errors = result.Errors.Select(e => new { e.Code, e.Description });
-                        return BadRequest(new ProblemDetails { Title = "Failed to create role", Detail = "Role creation failed.", Status = 400, Extensions = { ["errors"] = errors } });
+                        return BadRequest(new ProblemDetails { Title = "Failed to delete role", Detail = "Deleting role failed.", Status = 400, Extensions = { ["errors"] = errors } });
                     }
                     return BadRequest();
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -156,7 +156,7 @@ namespace Shop.UsersApi.Controllers
         }
 
         [HttpPut("addRoleToUser")]
-        public async Task<ActionResult<ApplicationUser>> AddRoleToUser() //być może ta metoda będzie miała zwracać coś innego
+        public async Task<ActionResult<IdentityUserRole<string>>> AddRoleToUser() //być może ta metoda będzie miała zwracać coś innego
         {
             try
             {
