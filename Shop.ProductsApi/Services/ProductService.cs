@@ -26,21 +26,32 @@ namespace Shop.ProductsApi.Services
             {
                 throw new Exception("Product of that ID already exists.");
             }
+
+            product.Category = _appDbContext.Categories.FirstOrDefault(c => c.Name == product.CategoryName);
+                
             _appDbContext.Add(product);
             _appDbContext.SaveChanges();
             return product;
         }
 
-        public void DeleteProduct(uint id)
+        public Product GetProduct(uint productId)
         {
-            var existingProduct = GetProduct(id);
-            if (existingProduct == null)
+
+            if (!ProductIdExists(productId))
+           //var existingProduct = GetProduct(id);
+           // if (existingProduct == null)
             {
                 throw new Exception("Product does not exist.");
             }
-
-            _appDbContext.Products.Remove(existingProduct);
-            _appDbContext.SaveChanges();
+            
+            var result = _appDbContext.Products
+                .Include(p=>p.Category)
+                .FirstOrDefault(p=>p.Id == productId);
+            
+            if (result == null)
+                throw new Exception("Product is null");
+            
+            return result;
         }
 
         public IEnumerable<Product> GetAllProducts()
@@ -48,20 +59,20 @@ namespace Shop.ProductsApi.Services
             return _appDbContext.Products;
         }
 
-        public Product GetProduct(uint productId)
-        {
-            if (!ProductIdExists(productId))
-            {
-                throw new Exception("Product does not exist.");
-            }
-            return _appDbContext.Products.Find(productId);
-        }
-        
-        public bool ProductIdExists(uint productId)
-        {
-            return _appDbContext.Products.Any(p => p.Id == productId);
-        }
 
+//        public Product GetProduct(uint productId)
+//        {
+//            if (!ProductIdExists(productId))
+//            {
+//                throw new Exception("Product does not exist.");
+//            }
+//            return _appDbContext.Products.Find(productId);
+//        }
+//        
+//        public bool ProductIdExists(uint productId)
+//        {
+//            return _appDbContext.Products.Any(p => p.Id == productId);
+//        }
         public void SaveProduct(Product product)
         {
             if (ProductIdExists(product.Id))
@@ -73,24 +84,48 @@ namespace Shop.ProductsApi.Services
                 CreateProduct(product);
             }
         }
-
         public Product UpdateProduct(Product product)
         {
+
+            if (!ProductIdExists(product.Id))
+            {
+                throw new Exception("Product of that ID does not exist.");
+            }
             var existingProduct = GetProduct(product.Id);
             if (existingProduct == null)
             {
-                throw new Exception("Product does not exist.");
+                throw new Exception("Product of that ID is null.");
+
+            //var existingProduct = GetProduct(product.Id);
+            //if (existingProduct == null)
+            //{
+                //throw new Exception("Product does not exist.");
             }
 
             existingProduct.Name = product.Name;
             existingProduct.Description = product.Description;
+            existingProduct.CategoryName = product.CategoryName;
             existingProduct.Category = product.Category;
             existingProduct.Price = product.Price;
-            existingProduct.CategoryName = product.CategoryName;
             existingProduct.Stock = product.Stock;
-            
+
+            _appDbContext.Update(existingProduct);
             _appDbContext.SaveChanges();
             return existingProduct;
+        }
+        public void DeleteProduct(uint id)
+        {
+            if (!ProductIdExists(id))
+            {
+                throw new Exception("Product does not exist.");
+            }
+            
+            _appDbContext.Products.Remove(GetProduct(id));
+            _appDbContext.SaveChanges();
+        }
+        public bool ProductIdExists(uint productId)
+        {
+            return _appDbContext.Products.Any(p => p.Id == productId);
         }
     }
 }

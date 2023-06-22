@@ -8,7 +8,7 @@ public interface ICategoryService
     IEnumerable<Category> GetAllCategories();
     void SaveCategory(Category category);
     Category CreateCategory(Category category);
-    Category UpdateCategory(string categoryName, string categoryDescription);
+    Category UpdateCategory(Category category);
     bool CategoryExists(string categoryName);
     void DeleteCategory(string categoryName);
 }
