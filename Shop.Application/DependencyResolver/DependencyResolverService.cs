@@ -15,9 +15,9 @@ namespace Shop.Application.DependencyResolver
         public static void Register(IServiceCollection services) 
         {
             services.AddHttpContextAccessor();
-            services.AddScoped<IRoleService, RoleService>();
+            //services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddHttpClient<IRoleService, RoleService>(); // nie wiem ktory i co
+            //services.AddHttpClient<IRoleService, RoleService>(); // nie wiem ktory i co
             services.AddHttpClient<IUserService, UserService>();
         }
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shop.Application.Interfaces;
-using Shop.Domain.Entities;
+using Shop.ProductsApi.Interfaces;
+using Shop.ProductsApi.Models;
 
 namespace Shop.ProductsApi.Controllers
 {
@@ -8,67 +8,69 @@ namespace Shop.ProductsApi.Controllers
     [Route("api/products")]
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _productRepository;
-
-        public ProductController(IProductService productRepository)
+        private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
+        public ProductController(IProductService productService, ICategoryService categoryService)
         {
-            _productRepository = productRepository;
+            _categoryService = categoryService;
+            _productService = productService;
         }
-
-        [HttpGet]
-        public ActionResult<IEnumerable<Product>> GetAllProducts()
+        
+        [HttpPost("CreateProduct")]
+        public ActionResult<Product> CreateProduct(Product product)
         {
-            var products = _productRepository.GetAllProducts();
-            return Ok(products);
+            if (_categoryService.CategoryExists(product.CategoryName))
+            {
+                _productService.CreateProduct(product);
+                return Created($"api/products/{product.Id}", product);
+            }
+            return BadRequest("CategoryName property alludes to non-existening category.");
+            
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Product> GetProductById(int id)
+        public ActionResult<Product> GetProductById(uint id)
         {
-            var product = _productRepository.GetProductById(id);
-            if (product == null)
+            if (!_productService.ProductIdExists(id))
             {
-                return NotFound();
+                return NotFound($"Product of given ID = {id} does not exist.");
             }
+            var product = _productService.GetProduct(id);
             return Ok(product);
         }
+        
+        [HttpGet("GetAllProducts")]
+        public ActionResult<IEnumerable<Product>> GetAllProducts() => Ok(_productService.GetAllProducts());
 
-        //[HttpPost]
-        //public ActionResult<Product> CreateProduct(Product product)
-        //{
-        //    _productRepository.CreateProduct(product);
-        //    return CreatedAtAction(nameof(GetProductById), new { id = product.ID }, product);
-        //}
-
-        [HttpPut("{id}")]
-        public IActionResult UpdateProduct(int id, Product product)
+        [HttpPut("Update/{id}")]
+        public ActionResult<Product> UpdateProduct(uint id, Product updatedProduct)
         {
-            //if (id != product.ID)
-            //{
-            //    return BadRequest();
-            //}
-
-            if (!_productRepository.ProductExists(id))
+            if (id != updatedProduct.Id)
             {
-                return NotFound();
+                return BadRequest($"id parameter does not match the product id\n{id} != {updatedProduct.Id}");
             }
 
-            _productRepository.UpdateProduct(product);
+            if (!_productService.ProductIdExists(id))
+            {
+                return NotFound($"Product of given ID = {id} does not exist.");
+            }
 
-            return NoContent();
+            var product = _productService.UpdateProduct(updatedProduct);
+
+            return Accepted($"api/products/{product.Id}", product);
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteProduct(int id)
+        [HttpDelete("Delete/{id}")]
+        public IActionResult DeleteProduct(uint id)
         {
-            if (!_productRepository.ProductExists(id))
+            if (!_productService.ProductIdExists(id))
             {
-                return NotFound();
+                return NotFound($"Product of given ID = {id} does not exist.");
             }
 
-            _productRepository.DeleteProduct(id);
+            _productService.DeleteProduct(id);
 
-            return NoContent();
+            return Ok($"api/products/{id}");
         }
     }
 }
