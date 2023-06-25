@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.WebUI", "Shop\Shop.WebUI.csproj", "{37C9B75F-3DBE-4C15-86F0-F42214D051D7}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.Application", "Shop.Application\Shop.Application.csproj", "{0F566BB9-A6A9-448D-8217-240779830CAE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C9FD001B-E46E-4A3A-A243-B805FC16B7F3} = {C9FD001B-E46E-4A3A-A243-B805FC16B7F3}
@@ -30,7 +28,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.WarehouseApi", "Shop.W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.DbMigrations", "Shop.DbMigrations\Shop.DbMigrations.csproj", "{9DD161A4-1BE7-4C01-948E-02A109464CA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiDoTestow", "ApiDoTestow\ApiDoTestow.csproj", "{3065A899-231A-4CBA-B097-3535DB94E705}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiDoTestow", "ApiDoTestow\ApiDoTestow.csproj", "{3065A899-231A-4CBA-B097-3535DB94E705}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.WebUi", "Shop.Web\Shop.WebUi.csproj", "{5A46A88E-4062-4881-A317-AEDC97C73F07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,10 +38,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{37C9B75F-3DBE-4C15-86F0-F42214D051D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{37C9B75F-3DBE-4C15-86F0-F42214D051D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{37C9B75F-3DBE-4C15-86F0-F42214D051D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{37C9B75F-3DBE-4C15-86F0-F42214D051D7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0F566BB9-A6A9-448D-8217-240779830CAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0F566BB9-A6A9-448D-8217-240779830CAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F566BB9-A6A9-448D-8217-240779830CAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -78,12 +74,15 @@ Global
 		{3065A899-231A-4CBA-B097-3535DB94E705}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3065A899-231A-4CBA-B097-3535DB94E705}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3065A899-231A-4CBA-B097-3535DB94E705}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A46A88E-4062-4881-A317-AEDC97C73F07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A46A88E-4062-4881-A317-AEDC97C73F07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A46A88E-4062-4881-A317-AEDC97C73F07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A46A88E-4062-4881-A317-AEDC97C73F07}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{37C9B75F-3DBE-4C15-86F0-F42214D051D7} = {6993498C-96BE-4E52-AD1B-94D723A8895F}
 		{0F566BB9-A6A9-448D-8217-240779830CAE} = {6993498C-96BE-4E52-AD1B-94D723A8895F}
 		{C9FD001B-E46E-4A3A-A243-B805FC16B7F3} = {6993498C-96BE-4E52-AD1B-94D723A8895F}
 		{D6DD5044-5CBF-4537-9C50-821B1F66D3E3} = {6993498C-96BE-4E52-AD1B-94D723A8895F}
@@ -94,6 +93,7 @@ Global
 		{2F20AC01-FF3B-4C6A-B3C6-93A66AACD4F6} = {49DD9355-6B12-4BB9-8BFA-94EA1227666C}
 		{5CD1276A-E056-4ABF-BB18-7C53A77E62A9} = {49DD9355-6B12-4BB9-8BFA-94EA1227666C}
 		{3065A899-231A-4CBA-B097-3535DB94E705} = {49DD9355-6B12-4BB9-8BFA-94EA1227666C}
+		{5A46A88E-4062-4881-A317-AEDC97C73F07} = {6993498C-96BE-4E52-AD1B-94D723A8895F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CDD625E0-8BEB-45D3-88F5-4B38D96D573D}
