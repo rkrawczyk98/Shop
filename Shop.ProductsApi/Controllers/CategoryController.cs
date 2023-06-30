@@ -26,7 +26,7 @@ namespace Shop.ProductsApi.Controllers
             return Created($"api/categories/{createdCategory.Name}", createdCategory);
         }
 
-        [HttpGet("{categoryName}")]
+        [HttpGet("categoryName")]
         public ActionResult<Category> GetCategory(string categoryName)
         {
             if (!_categoryService.CategoryExists(categoryName))
@@ -40,24 +40,30 @@ namespace Shop.ProductsApi.Controllers
         [HttpGet("GetAllCategories")]
         public ActionResult<IEnumerable<Category>> GetAllCategories() => Ok(_categoryService.GetAllCategories());
 
-        [HttpPut("Update/{categoryName}")]
-        public ActionResult<Category> UpdateCategory(string categoryName, Category category)
+        [HttpPut("Update/categoryName")]
+        public ActionResult<Category> UpdateCategory(string categoryName, string newDesciption /*Category category*/)
         {
-            if (categoryName != category.Name)
-            {
-                return BadRequest($"categoryName parameter does not match the category\n{categoryName} != {category.Name}");
-            }
+            //if (oldCategoryName != newCategoryName)
+            //{
+            //    return BadRequest($"categoryName parameter does not match the category\n{oldCategoryName} != {newCategoryName}");
+            //}
 
             if (!_categoryService.CategoryExists(categoryName))
             {
                 return NotFound($"Category of given Name = {categoryName} does not exist.");
             }
-            
+
+            var category = new Category()
+            {
+                Name = categoryName,
+                Description = newDesciption
+            };
+
             var updatedCategory = _categoryService.UpdateCategory(category);
             return Accepted($"api/categories/{updatedCategory.Name}", updatedCategory);
         }
 
-        [HttpDelete("Delete/{categoryName}")]
+        [HttpDelete("Delete/categoryName")]
         public ActionResult DeleteCategory(string categoryName)
         {
             if (!_categoryService.CategoryExists(categoryName))
