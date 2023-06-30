@@ -8,6 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Microservices\**" />
+    <Compile Remove="Repositories\**" />
+    <EmbeddedResource Remove="Microservices\**" />
+    <EmbeddedResource Remove="Repositories\**" />
+    <None Remove="Microservices\**" />
+    <None Remove="Repositories\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="3.2.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -38,11 +47,6 @@
     <ProjectReference Include="..\Shop.Application\Shop.Application.csproj" />
     <ProjectReference Include="..\Shop.Domain\Shop.Domain.csproj" />
     <ProjectReference Include="..\Shop.ProductsApi\Shop.ProductsApi.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Microservices\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>
