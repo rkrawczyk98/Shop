@@ -28,7 +28,7 @@ namespace Shop.ProductsApi.Controllers
             
         }
 
-        [HttpGet("{getProductById}")]
+        [HttpGet("getProductById")]
         public ActionResult<Product> GetProductById(uint id)
         {
             if (!_productService.ProductIdExists(id))

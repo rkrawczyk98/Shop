@@ -7,8 +7,10 @@ using Shop.Application.Services;
 using Shop.Domain.Entities;
 using System.Data;
 using System.Diagnostics;
+using System.IO.Pipelines;
 using System.Net.Http;
 using System.Text;
+using System.Xml.Linq;
 
 namespace ApiDoTestow.Controllers
 {
@@ -344,5 +346,120 @@ namespace ApiDoTestow.Controllers
             }
         }
 
+
+        [HttpPost("createProduct")]
+        public async Task<ActionResult<Product>> CreateProduct(string name, string description,string categoryName, decimal price, int stock)
+        {
+            try
+            {
+                var data = new JObject();
+                data["Name"] = name;
+                data["Description"] = description;
+                data["CategoryName"] = categoryName;
+                data["Price"] = price;
+                data["Stock"] = stock;
+                var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await _client.PostAsync("http://localhost:5044/api/products/createProduct", contentdata);
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var product = JsonConvert.DeserializeObject<Product>(responseContent);
+
+                if (response.IsSuccessStatusCode)
+                    return Ok(product);
+                else
+                    return BadRequest();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        [HttpGet("getProductById")]
+        public async Task<ActionResult<Product>> GetProductById(int id)
+        {
+            try
+            {
+                //var data = new JObject();
+                //data["id"] = id;
+                //var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await _client.GetAsync($"http://localhost:5044/api/products/getProductById?id={id}");
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var product = JsonConvert.DeserializeObject<Product>(responseContent);
+
+                if (response.IsSuccessStatusCode)
+                    return Ok(product);
+                else
+                    return BadRequest();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        [HttpGet("getAllProducts")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts()
+        {
+            HttpResponseMessage response = await _client.GetAsync($"http://localhost:5044/api/products/getAllProducts");
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var productsAll = JsonConvert.DeserializeObject<List<Category>>(responseContent);
+            var products = productsAll.AsEnumerable();
+
+            if (response.IsSuccessStatusCode)
+                return Ok(products);
+            else
+                return BadRequest();
+        }
+
+        [HttpDelete("deleteProduct")]
+        public async Task<ActionResult> DeleteProduct(int id)
+        {
+            try
+            {
+                HttpResponseMessage response = await _client.DeleteAsync($"http://localhost:5044/api/products/deleteProduct?id={id}");
+                if (response.IsSuccessStatusCode)
+                    return Ok();
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        //[HttpPost("CreateOrder")]
+        //public async Task<ActionResult<Order>> CreateOrder(Order order)
+        //{
+        //    try
+        //    {
+        //        var data = new JObject();
+        //        data["Name"] = name;
+        //        data["Description"] = description;
+        //        data["CategoryName"] = categoryName;
+        //        data["Price"] = price;
+        //        data["Stock"] = stock;
+        //        var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+        //        HttpResponseMessage response = await _client.PostAsync("http://localhost:5035/api/orders/CreateOrder", contentdata);
+        //        var responseContent = await response.Content.ReadAsStringAsync();
+        //        var product = JsonConvert.DeserializeObject<Product>(responseContent);
+
+        //        if (response.IsSuccessStatusCode)
+        //            return Ok(product);
+        //        else
+        //            return BadRequest();
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine(ex.Message);
+        //        return null;
+        //    }
+        //}
     }
 }
