@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+ï»¿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -7,9 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Shop.UsersApi;
 using Shop.UsersApi.Data;
-using Shop.UsersApi.Interfaces;
 using Shop.UsersApi.Models;
-//using Shop.UsersApi.Services;
 using System;
 using System.Text;
 
@@ -18,7 +16,7 @@ var config = builder.Configuration;
 
 // Add services to the container.
 
-var key = Encoding.ASCII.GetBytes("abc12c04-83cd-4778-8715-72f3ec104006"); // Klucz tajny u¿ywany do podpisu i weryfikacji tokenu
+var key = Encoding.ASCII.GetBytes("abc12c04-83cd-4778-8715-72f3ec104006"); // Klucz tajny uÂ¿ywany do podpisu i weryfikacji tokenu
 
 builder.Services.AddAuthentication(options =>
 {
@@ -27,14 +25,14 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false; // Ustawiæ na true w œrodowisku produkcyjnym
+    options.RequireHttpsMetadata = false; // UstawiÃ¦ na true w Å“rodowisku produkcyjnym
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = false, // Jeœli u¿ywasz konkretnego wydawcy tokenu (issuer), ustaw wartoœæ true i okreœl prawid³owy issuer
-        ValidateAudience = false, // Jeœli u¿ywasz konkretnego odbiorcy tokenu (audience), ustaw wartoœæ true i okreœl prawid³owy audience
+        ValidateIssuer = false, // JeÅ“li uÂ¿ywasz konkretnego wydawcy tokenu (issuer), ustaw wartoÅ“Ã¦ true i okreÅ“l prawidÂ³owy issuer
+        ValidateAudience = false, // JeÅ“li uÂ¿ywasz konkretnego odbiorcy tokenu (audience), ustaw wartoÅ“Ã¦ true i okreÅ“l prawidÂ³owy audience
     };
 });
 //builder.Services.AddAuthentication(x =>
@@ -66,21 +64,18 @@ builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddDbContext<ShopDbContext>(options => 
+builder.Services.AddDbContext<ShopDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
-builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ShopDbContext>()
     .AddDefaultTokenProviders();
-builder.Services.Configure<IdentityOptions>(options => 
+builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 8;
 });
-//builder.Services.AddScoped<IAccountService, AccountService>();
-
-//builder.Services.AddTransient<ISeedData, SeedData>();
 
 var app = builder.Build();
 
@@ -102,7 +97,5 @@ using (var scope = app.Services.CreateScope())
 {
     await SeedData.EnsureSeedData(scope, app.Configuration, app.Logger);
 }
-
-
 
 app.Run();

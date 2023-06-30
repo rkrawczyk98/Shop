@@ -1,68 +1,34 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shop.UsersApi.Models;
 using System.Reflection.Emit;
 
 namespace Shop.UsersApi.Data
 {
-    public class ShopDbContext : IdentityDbContext<ApplicationUser ,ApplicationRole, string, ApplicationUserClaim, ApplicationUserRole,
-        ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>
-
-        //: IdentityDbContext<IdentityUser<ApplicationUser>> , IdentityRole<ApplicationRole>, string, IdentityUserClaim<ApplicationUserClaim>, IdentityUserRole<ApplicationUserRole>,
-        //IdentityUserLogin<ApplicationUserLogin>, IdentityRoleClaim<ApplicationRoleClaim>, IdentityUserToken<ApplicationUserToken>>
+    public class ShopDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ShopDbContext(DbContextOptions<ShopDbContext> options) : base(options) 
+        public ShopDbContext(DbContextOptions<ShopDbContext> options) : base(options)
         {
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            // Customize the ASP.NET Identity model and override the defaults if needed.
+            // For example, you can rename the ASP.NET Identity table names and more.
+            // Add your customizations after calling base.OnModelCreating(builder);
+        }
 
-            builder.Entity<ApplicationUser>(b =>
+        private class ApplicationUserEntityConfiguration :
+            IEntityTypeConfiguration<ApplicationUser>
+        {
+            public void Configure(EntityTypeBuilder<ApplicationUser> builder)
             {
-                // Each User can have many UserClaims
-                b.HasMany(e => e.Claims)
-                    .WithOne()
-                    .HasForeignKey(uc => uc.UserId)
-                    .IsRequired();
-
-                // Each User can have many UserLogins
-                b.HasMany(e => e.Logins)
-                    .WithOne()
-                    .HasForeignKey(ul => ul.UserId)
-                    .IsRequired();
-
-                // Each User can have many UserTokens
-                b.HasMany(e => e.Tokens)
-                    .WithOne()
-                    .HasForeignKey(ut => ut.UserId)
-                    .IsRequired();
-
-                // Each User can have many entries in the UserRole join table
-                b.HasMany(e => e.Roles)
-                    .WithOne()
-                    .HasForeignKey(ur => ur.UserId)
-                    .IsRequired();
-            });
-
-            builder.Entity<ApplicationRole>(b =>
-            {
-                // Each Role can have many entries in the UserRole join table
-                b.HasMany(e => e.UserRoles)
-                    .WithOne(e => e.Role)
-                    .HasForeignKey(ur => ur.RoleId)
-                    .IsRequired();
-
-                // Each Role can have many associated RoleClaims
-                b.HasMany(e => e.RoleClaims)
-                    .WithOne(e => e.Role)
-                    .HasForeignKey(rc => rc.RoleId)
-                    .IsRequired();
-            });
-            
+                builder.Property(x => x.FirstName).HasMaxLength(255);
+                builder.Property(x => x.LastName).HasMaxLength(255);
+            }
         }
     }
 }
