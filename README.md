@@ -15,6 +15,11 @@
 - .NET Core 3.1 or later
 - SQL Server
 
+**Test Users**
+
+- Admin Login: admin Password: Admin123!
+- User Login: user Password: User123!
+
 ### **Getting Started**
 
 Clone the repository
@@ -61,8 +66,5 @@ To do so, you have follow the mentioned steps on each Microservice directory.
 
   Step 4. Go back to Steps 1 through 4 and repeat for the other services.
 
-Configure runtime configuration to run all projects at once.
-Run the application.
-
-
-
+Configure startup to run all microservices projects at once.
+Run the application using http.
