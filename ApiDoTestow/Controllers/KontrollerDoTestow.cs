@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shop.Application.Services;
 using Shop.Domain.Entities;
+using System.Data;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
@@ -33,7 +34,10 @@ namespace ApiDoTestow.Controllers
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var role = JsonConvert.DeserializeObject<ApplicationRole>(responseContent);
 
-                return Ok(role);
+                if (response.IsSuccessStatusCode)
+                    return Ok(role);
+                else
+                    return BadRequest();
             }
             catch (Exception ex)
             {
@@ -54,7 +58,10 @@ namespace ApiDoTestow.Controllers
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var user = JsonConvert.DeserializeObject<ApplicationUser>(responseContent);
 
-                return Ok(user);
+                if (response.IsSuccessStatusCode)
+                    return Ok(user);
+                else
+                    return BadRequest();
             }
             catch (Exception ex)
             {
@@ -70,7 +77,144 @@ namespace ApiDoTestow.Controllers
             {
                 HttpResponseMessage response = await _client.DeleteAsync($"http://localhost:5170/api/auth/removeUserFromRole?userName={userName}&roleName={roleName}");
 
-                return Ok();
+                if(response.IsSuccessStatusCode)
+                    return Ok();
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult> LoginAsync(string userName, string password)
+        {
+            try
+            {
+                var data = new JObject { ["userName"] = userName, ["password"] = password };
+                var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await _client.PostAsync("http://localhost:5170/api/auth/login", contentdata);
+                var responseContent = await response.Content.ReadAsStringAsync();
+                //var user = JsonConvert.DeserializeObject<ApplicationUser>(responseContent);
+
+                if (response.IsSuccessStatusCode)
+                    return Ok();
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        [HttpPost("registerUser")]
+        public async Task<ActionResult<ApplicationUser>> RegisterUserAsync(string userName, string email, string password, string firstName, string lastName)
+        {
+            try
+            {
+                var data = new JObject { ["userName"] = userName, ["email"] = email, ["password"] = password, ["firstName"] = firstName, ["lastName"] = lastName };
+                var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await _client.PostAsync("http://localhost:5170/api/auth/register", contentdata);
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var user = JsonConvert.DeserializeObject<ApplicationUser>(responseContent);
+
+                if (response.IsSuccessStatusCode)
+                    return Ok(user);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        [HttpPost("resetPassword")]
+        public async Task<ActionResult> ResetUserPasswordAsync(string email, string newPassword)
+        {
+            try
+            {
+                var data = new JObject { ["email"] = email, ["newPassword"] = newPassword };
+                var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await _client.PostAsync("http://localhost:5170/api/auth/resetPassword", contentdata);
+                var responseContent = await response.Content.ReadAsStringAsync();
+                //var user = JsonConvert.DeserializeObject<ApplicationUser>(responseContent);
+
+                if (response.IsSuccessStatusCode)
+                    return Ok();
+                else
+                    return BadRequest();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        [HttpGet("allRoles")]
+        public async Task<ActionResult<IQueryable<IdentityRole>>> GetAllRoles()
+        {
+            HttpResponseMessage response = await _client.GetAsync("http://localhost:5170/api/auth/roles");
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var rolesList = JsonConvert.DeserializeObject<List<IdentityRole>>(responseContent);
+            var roles = rolesList.AsQueryable();
+
+            if (response.IsSuccessStatusCode)
+                return Ok(roles);
+            return BadRequest();
+        }
+
+        [HttpGet("allUsers")]
+        public async Task<ActionResult<IQueryable<IdentityUser>>> GetAllUsers()
+        {
+            HttpResponseMessage response = await _client.GetAsync("http://localhost:5170/api/auth/users");
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var usersList = JsonConvert.DeserializeObject<List<IdentityUser>>(responseContent);
+            var users = usersList.AsQueryable();
+
+            if (response.IsSuccessStatusCode)
+                return Ok(users);
+            return BadRequest();
+        }
+
+        [HttpDelete("removeUser")]
+        public async Task<ActionResult> RemoveUser(string userName)
+        {
+            try
+            {
+                HttpResponseMessage response = await _client.DeleteAsync($"http://localhost:5170/api/auth/removeUser?userName={userName}");
+
+                if (response.IsSuccessStatusCode)
+                    return Ok();
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        [HttpDelete("removeRole")]
+        public async Task<ActionResult> RemoveRole(string roleName)
+        {
+            try
+            {
+                HttpResponseMessage response = await _client.DeleteAsync($"http://localhost:5170/api/auth/removeRole?roleName={roleName}");
+
+                if (response.IsSuccessStatusCode)
+                    return Ok();
+                else
+                    return BadRequest();
             }
             catch (Exception ex)
             {

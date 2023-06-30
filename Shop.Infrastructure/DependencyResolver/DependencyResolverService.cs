@@ -10,7 +10,6 @@ using Shop.Domain.Entities;
 using Shop.Infrastructure.Data;
 using Shop.Infrastructure.Data.Seeding;
 using Shop.Infrastructure.Services;
-using Shop.ProductsApi.Services;
 
 //using Shop.Infrastructure.Repositories;
 

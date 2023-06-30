@@ -32,48 +32,116 @@ namespace Shop.UsersApi.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<ApplicationUser>> LoginAsync(string userName, string password)
+        public async Task<ActionResult> LoginAsync()
         {
-            var result = await _signInManager.PasswordSignInAsync(userName, password, isPersistent: false, lockoutOnFailure: false);
-            if (result.Succeeded)
+            try
             {
-                return Ok();
+                using (var reader = new StreamReader(Request.Body))
+                {
+                    var requestBody = await reader.ReadToEndAsync();
+                    var data = JObject.Parse(requestBody);
+                    var userName = data.Value<string>("userName");
+                    var password = data.Value<string>("password");
+
+                    var result = await _signInManager.PasswordSignInAsync(userName, password, isPersistent: false, lockoutOnFailure: false);
+                    if (result.Succeeded)
+                    {
+                        return Ok();
+                    }
+                    return BadRequest(result.IsNotAllowed);
+                }
             }
-            return BadRequest(result);
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<ApplicationUser>> RegisterUserAsync(string email, string password, string firstName, string lastName)
+        public async Task<ActionResult<ApplicationUser>> RegisterUserAsync()
         {
-            var user = new ApplicationUser
+            try
             {
-                Id = Guid.NewGuid().ToString(),
-                UserName = email,
-                Email = email,
-                FirstName = firstName,
-                LastName = lastName,
-                NormalizedEmail = email
-            };
+                using (var reader = new StreamReader(Request.Body))
+                {
+                    var requestBody = await reader.ReadToEndAsync();
+                    var data = JObject.Parse(requestBody);
+                    var userName = data.Value<string>("userName");
+                    var password = data.Value<string> ("password");
+                    var email = data.Value<string>("email");
+                    var firstName = data.Value<string>("firstName");
+                    var lastName = data.Value<string>("lastName");
 
-            var result = await _userManager.CreateAsync(user, password);
-            if (result.Succeeded)
-            {
-                return Ok();
+                    if (await _userManager.FindByEmailAsync(email) == null)
+                    {
+                        var newUser = new ApplicationUser
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            UserName = userName,
+                            Email = email,
+                            FirstName = firstName,
+                            LastName = lastName,
+                            NormalizedEmail = email
+                        };
+                        var result = await _userManager.CreateAsync(newUser,password);
+                        var createdUser = await _userManager.FindByEmailAsync(email);
+                        if (result.Succeeded)
+                        {
+                            return Ok(createdUser);
+                        }
+
+                        var errors = result.Errors.Select(e => new { e.Code, e.Description });
+                        return BadRequest(new ProblemDetails { Title = "Failed to create user", Detail = "User creation failed.", Status = 400, Extensions = { ["errors"] = errors } });
+                    }
+                    else
+                    {
+                        return BadRequest("User with this e-mail already exists.");
+                    }
+                }
             }
-            return BadRequest(result.Errors);
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
         }
 
         [HttpPost("resetPassword")]
-        public async Task<ActionResult<ApplicationUser>> ResetPasswordAsync(string email, string newPassword)
+        public async Task<ActionResult> ResetPasswordAsync()
         {
-            var user = await _userManager.FindByNameAsync(email);
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
-            if (result.Succeeded)
+            try
             {
-                return Ok();
+                using (var reader = new StreamReader(Request.Body))
+                {
+                    var requestBody = await reader.ReadToEndAsync();
+                    var data = JObject.Parse(requestBody);
+                    var email = data.Value<string>("email");
+                    var newPassword = data.Value<string>("newPassword");
+
+                    var user = await _userManager.FindByEmailAsync(email);
+                    if (user != null)
+                    {
+                        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                        var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+                        if (result.Succeeded)
+                        {
+                            return Ok();
+                        }
+                        var errors = result.Errors.Select(e => new { e.Code, e.Description });
+                        return BadRequest(new ProblemDetails { Title = "Failed to change password", Detail = "Password changing failed.", Status = 400, Extensions = { ["errors"] = errors } });
+                    }
+                    else
+                    {
+                        return BadRequest("User not exists.");
+                    }
+                }
             }
-            return BadRequest(result.Errors);
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
         }
 
 
@@ -122,24 +190,24 @@ namespace Shop.UsersApi.Controllers
         {
             try
             {
-                    ApplicationUser user = await _userManager.FindByNameAsync(userName);
-                    IdentityRole role = await _roleManager.FindByNameAsync(roleName);
-                    if (role != null && user != null)
+                ApplicationUser user = await _userManager.FindByNameAsync(userName);
+                IdentityRole role = await _roleManager.FindByNameAsync(roleName);
+                if (role != null && user != null)
+                {
+                    if (!await _userManager.IsInRoleAsync(user, roleName))
                     {
-                        if (!await _userManager.IsInRoleAsync(user, roleName))
-                        {
-                            return BadRequest();
-                        }
-                        var result = await _userManager.RemoveFromRoleAsync(user, roleName);
-                        if (result.Succeeded)
-                        {
-                            return Ok();
-                        }
-                        var errors = result.Errors.Select(e => new { e.Code, e.Description });
-                        return BadRequest(new ProblemDetails { Title = "Failed to delete role", Detail = "Deleting role failed.", Status = 400, Extensions = { ["errors"] = errors } });
+                        return BadRequest();
                     }
-                    return BadRequest();
-                //}
+                    var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+                    if (result.Succeeded)
+                    {
+                        return Ok();
+                    }
+                    var errors = result.Errors.Select(e => new { e.Code, e.Description });
+                    return BadRequest(new ProblemDetails { Title = "Failed to delete role", Detail = "Deleting role failed.", Status = 400, Extensions = { ["errors"] = errors } });
+                }
+                return BadRequest();
+                
             }
             catch (Exception ex)
             {
@@ -188,35 +256,73 @@ namespace Shop.UsersApi.Controllers
         {
             try
             {
-                //    using (var reader = new StreamReader(Request.Body))
-                //    {
-                //        var requestBody = await reader.ReadToEndAsync();
-                //        var data = JObject.Parse(requestBody);
-                //        var roleName = data.Value<string>("roleName");
-
-                //        if (await _roleManager.FindByNameAsync(roleName) == null)
-                //        {
-                //            var newRole = new IdentityRole
-                //            {
-                //                Id = Guid.NewGuid().ToString(),
-                //                Name = roleName
-                //            };
-                //            var result = await _roleManager.CreateAsync(newRole);
-                //            if (result.Succeeded)
-                //            {
-                //                return CreatedAtAction(nameof(AddRole), newRole);
-                //            }
-
-                //            var errors = result.Errors.Select(e => new { e.Code, e.Description });
-                //            return BadRequest(new ProblemDetails { Title = "Failed to create role", Detail = "Role creation failed.", Status = 400, Extensions = { ["errors"] = errors } });
-                //        }
-                //        else
-                //        {
-                //            return BadRequest("Role already exists.");
-                //        }
-                //    }
-
                 return Ok(_roleManager.Roles);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        [HttpGet("users")]
+        public async Task<ActionResult<IQueryable<IdentityUser>>> Users()
+        {
+            try
+            {
+                return Ok(_userManager.Users);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        [HttpDelete("removeUser")]
+        public async Task<ActionResult> RemoveUser(string userName)
+        {
+            try
+            {
+                ApplicationUser user = await _userManager.FindByNameAsync(userName);
+                if (user != null)
+                {
+                    var result = await _userManager.DeleteAsync(user);
+                    if (result.Succeeded)
+                    {
+                        return Ok();
+                    }
+                    var errors = result.Errors.Select(e => new { e.Code, e.Description });
+                    return BadRequest(new ProblemDetails { Title = "Failed to delete user", Detail = "Deleting user failed.", Status = 400, Extensions = { ["errors"] = errors } });
+                }
+                return BadRequest();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        [HttpDelete("removeRole")]
+        public async Task<ActionResult> RemoveRole(string roleName)
+        {
+            try
+            {
+                IdentityRole role = await _roleManager.FindByNameAsync(roleName);
+                if (role != null)
+                {
+                    var result = await _roleManager.DeleteAsync(role);
+                    if (result.Succeeded)
+                    {
+                        return Ok();
+                    }
+                    var errors = result.Errors.Select(e => new { e.Code, e.Description });
+                    return BadRequest(new ProblemDetails { Title = "Failed to delete role", Detail = "Deleting role failed.", Status = 400, Extensions = { ["errors"] = errors } });
+                }
+                return BadRequest();
+
             }
             catch (Exception ex)
             {

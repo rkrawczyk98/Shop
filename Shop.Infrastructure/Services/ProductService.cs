@@ -20,61 +20,64 @@ namespace Shop.Infrastructure.Services
             _client = client;
         }
 
-        public async Task<Product> CreateProduct(Product product)
+        public Product CreateProduct(Product product)
         {
-            try
-            {
-                var data = new JObject { ["product"] = product };
-                var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _client.PostAsync($"http://localhost:5170/api/products/createProduct/{product}");
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var responeProduct = JsonConvert.DeserializeObject<Product>(responseContent);
+            //try
+            //{
+            //    var data = new JObject { ["product"] = product };
+            //    var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+            //    HttpResponseMessage response = await _client.PostAsync($"http://localhost:5170/api/products/createProduct/{product}");
+            //    var responseContent = await response.Content.ReadAsStringAsync();
+            //    var responeProduct = JsonConvert.DeserializeObject<Product>(responseContent);
 
-                return responeProduct;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return null;
-            }
+            //    return responeProduct;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine(ex.Message);
+            //    return null;
+            //}
+            throw new NotImplementedException();
         }
 
         public void DeleteProduct(int id)
         {
-            try
-            {
-                var data = new JObject { ["product"] = product };
-                var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _client.PostAsync("http://localhost:5170/api/products/createProduct", contentdata);
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var responeProduct = JsonConvert.DeserializeObject<Product>(responseContent);
+            //try
+            //{
+            //    var data = new JObject { ["product"] = product };
+            //    var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+            //    HttpResponseMessage response = await _client.PostAsync("http://localhost:5170/api/products/createProduct", contentdata);
+            //    var responseContent = await response.Content.ReadAsStringAsync();
+            //    var responeProduct = JsonConvert.DeserializeObject<Product>(responseContent);
 
-                return responeProduct;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return null;
-            }
+            //    return responeProduct;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine(ex.Message);
+            //    return null;
+            //}
+            throw new NotImplementedException();
         }
 
         public Task<IEnumerable<Product>> GetAllProducts()
         {
-            try
-            {
-                var data = new JObject { ["product"] = product };
-                var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _client.PostAsync("http://localhost:5170/api/products/createProduct", contentdata);
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var responeProduct = JsonConvert.DeserializeObject<Product>(responseContent);
+            //try
+            //{
+            //    var data = new JObject { ["product"] = product };
+            //    var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+            //    HttpResponseMessage response = await _client.PostAsync("http://localhost:5170/api/products/createProduct", contentdata);
+            //    var responseContent = await response.Content.ReadAsStringAsync();
+            //    var responeProduct = JsonConvert.DeserializeObject<Product>(responseContent);
 
-                return responeProduct;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return null;
-            }
+            //    return responeProduct;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine(ex.Message);
+            //    return null;
+            //}
+            throw new NotImplementedException();
         }
 
         //public Product GetProduct(int productId)
@@ -84,21 +87,22 @@ namespace Shop.Infrastructure.Services
 
         public Product GetProductById(int id)
         {
-            try
-            {
-                var data = new JObject { ["product"] = product };
-                var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _client.PostAsync("http://localhost:5170/api/products/createProduct", contentdata);
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var responeProduct = JsonConvert.DeserializeObject<Product>(responseContent);
+            //try
+            //{
+            //    var data = new JObject { ["product"] = product };
+            //    var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+            //    HttpResponseMessage response = await _client.PostAsync("http://localhost:5170/api/products/createProduct", contentdata);
+            //    var responseContent = await response.Content.ReadAsStringAsync();
+            //    var responeProduct = JsonConvert.DeserializeObject<Product>(responseContent);
 
-                return responeProduct;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return null;
-            }
+            //    return responeProduct;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine(ex.Message);
+            //    return null;
+            //}
+            throw new NotImplementedException();
         }
 
         //public bool ProductExists(int productId)
@@ -113,21 +117,22 @@ namespace Shop.Infrastructure.Services
 
         public Product UpdateProduct(Product product)
         {
-            try
-            {
-                var data = new JObject { ["product"] = product };
-                var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _client.PostAsync("http://localhost:5170/api/products/createProduct", contentdata);
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var responeProduct = JsonConvert.DeserializeObject<Product>(responseContent);
+            //try
+            //{
+            //    var data = new JObject { ["product"] = product };
+            //    var contentdata = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+            //    HttpResponseMessage response = await _client.PostAsync("http://localhost:5170/api/products/createProduct", contentdata);
+            //    var responseContent = await response.Content.ReadAsStringAsync();
+            //    var responeProduct = JsonConvert.DeserializeObject<Product>(responseContent);
 
-                return responeProduct;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return null;
-            }
+            //    return responeProduct;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine(ex.Message);
+            //    return null;
+            //}
+            throw new NotImplementedException();
         }
     }
 }
