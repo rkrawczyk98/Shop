@@ -74,7 +74,7 @@ public class CategoryService : ICategoryService
         }
         
         existingCategory.Description = category.Description;
-        existingCategory.Products = category.Products;
+        //existingCategory.Products = category.Products;
 
         _appDbContext.Update(existingCategory);
         _appDbContext.SaveChanges();
