@@ -16,7 +16,7 @@ namespace Shop.ProductsApi.Controllers
             _productService = productService;
         }
         
-        [HttpPost("CreateProduct")]
+        [HttpPost("createProduct")]
         public ActionResult<Product> CreateProduct(Product product)
         {
             if (_categoryService.CategoryExists(product.CategoryName))
@@ -28,7 +28,7 @@ namespace Shop.ProductsApi.Controllers
             
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{getProductById}")]
         public ActionResult<Product> GetProductById(uint id)
         {
             if (!_productService.ProductIdExists(id))
@@ -39,10 +39,10 @@ namespace Shop.ProductsApi.Controllers
             return Ok(product);
         }
         
-        [HttpGet("GetAllProducts")]
+        [HttpGet("getAllProducts")]
         public ActionResult<IEnumerable<Product>> GetAllProducts() => Ok(_productService.GetAllProducts());
 
-        [HttpPut("Update/{id}")]
+        [HttpPut("updateProduct")]
         public ActionResult<Product> UpdateProduct(uint id, Product updatedProduct)
         {
             if (id != updatedProduct.Id)
@@ -60,7 +60,7 @@ namespace Shop.ProductsApi.Controllers
             return Accepted($"api/products/{product.Id}", product);
         }
 
-        [HttpDelete("Delete/{id}")]
+        [HttpDelete("deleteProduct")]
         public IActionResult DeleteProduct(uint id)
         {
             if (!_productService.ProductIdExists(id))

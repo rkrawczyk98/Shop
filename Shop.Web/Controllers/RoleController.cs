@@ -4,15 +4,16 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using Shop.Domain.Entities;
+using Shop.Application.Services;
 
 namespace Shop.WebUi.Controllers
 {
     public class RoleController : Controller
     {
-        private RoleManager<IdentityRole> roleManager;
+        private RoleService roleManager; //private RoleManager<IdentityRole> roleManager;
         private UserManager<ApplicationUser> userManager;
 
-        public RoleController(RoleManager<IdentityRole> roleMgr, UserManager<ApplicationUser> userMrg)
+        public RoleController(/*RoleManager<IdentityRole> roleMgr*/ RoleService roleMgr, UserManager<ApplicationUser> userMrg)
         {
             roleManager = roleMgr;
             userManager = userMrg;
@@ -30,26 +31,27 @@ namespace Shop.WebUi.Controllers
             return false;
         }
 
-        private void Errors(IdentityResult result)
-        {
-            foreach (IdentityError error in result.Errors)
-                ModelState.AddModelError("", error.Description);
-        }
+        //private void Errors(ApplicationRole result)
+        //{
+        //    foreach (ApplicationRole error in result.Errors)
+        //        ModelState.AddModelError("", error.Description);
+        //}
 
         [Authorize(Roles = "Admin")]
         public IActionResult Create() => View();
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create([Required] string name)
+        public async Task<IActionResult> Create([Required] string name) //
         {
             if (ModelState.IsValid)
             {
-                IdentityResult result = await roleManager.CreateAsync(new IdentityRole(name));
-                if (result.Succeeded)
+                
+                ActionResult<ApplicationRole> result =  await roleManager.AddRole(name); /*await roleManager.CreateAsync(new IdentityRole(name));*/
+                if (result.Value != null)
                     return RedirectToAction("Index");
                 else
-                    Errors(result);
+                    throw new NotImplementedException();//await Errors(result);
             }
             return View(name);
         }
@@ -59,14 +61,16 @@ namespace Shop.WebUi.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
-            IdentityRole role = await roleManager.FindByIdAsync(id);
+            ActionResult<ApplicationRole> resultRole = await roleManager.FindRoleById(id);
+            ApplicationRole role = resultRole.Value;
             if (role != null)
             {
-                IdentityResult result = await roleManager.DeleteAsync(role);
-                if (result.Succeeded)
+                ActionResult<ApplicationRole> result = await roleManager.RemoveRole(role);
+                //ApplicationRole result = pickedRole.Value;
+                if (result.Value != null)
                     return RedirectToAction("Index");
                 else
-                    Errors(result);
+                    throw new NotImplementedException();//Errors(result);
             }
             else
                 ModelState.AddModelError("", "No role found");
@@ -76,7 +80,8 @@ namespace Shop.WebUi.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(string id)
         {
-            IdentityRole role = await roleManager.FindByIdAsync(id);
+            ActionResult<ApplicationRole> result = await roleManager.UpdateRole(id);
+            ApplicationRole role = result.Value;
             List<ApplicationUser> members = new List<ApplicationUser>();
             List<ApplicationUser> nonMembers = new List<ApplicationUser>();
             foreach (ApplicationUser user in userManager.Users)

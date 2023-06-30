@@ -182,5 +182,47 @@ namespace Shop.UsersApi.Controllers
             }
 
         }
+
+        [HttpGet("roles")]
+        public async Task<ActionResult<IQueryable<IdentityRole>>> Roles()
+        {
+            try
+            {
+                //    using (var reader = new StreamReader(Request.Body))
+                //    {
+                //        var requestBody = await reader.ReadToEndAsync();
+                //        var data = JObject.Parse(requestBody);
+                //        var roleName = data.Value<string>("roleName");
+
+                //        if (await _roleManager.FindByNameAsync(roleName) == null)
+                //        {
+                //            var newRole = new IdentityRole
+                //            {
+                //                Id = Guid.NewGuid().ToString(),
+                //                Name = roleName
+                //            };
+                //            var result = await _roleManager.CreateAsync(newRole);
+                //            if (result.Succeeded)
+                //            {
+                //                return CreatedAtAction(nameof(AddRole), newRole);
+                //            }
+
+                //            var errors = result.Errors.Select(e => new { e.Code, e.Description });
+                //            return BadRequest(new ProblemDetails { Title = "Failed to create role", Detail = "Role creation failed.", Status = 400, Extensions = { ["errors"] = errors } });
+                //        }
+                //        else
+                //        {
+                //            return BadRequest("Role already exists.");
+                //        }
+                //    }
+
+                return Ok(_roleManager.Roles);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
     }
 }

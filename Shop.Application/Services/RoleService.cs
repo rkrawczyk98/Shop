@@ -72,5 +72,56 @@ namespace Shop.Application.Services
                 return null;
             }
         }
+
+        public async Task<ActionResult> RemoveRole(ApplicationRole roleName)
+        {
+            //try
+            //{
+            //    HttpResponseMessage response = await _client.DeleteAsync($"http://localhost:5170/api/auth/removeUserFromRole?userName={userName}&roleName={roleName}");
+
+            //    return null;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine(ex.Message);
+            //    return null;
+            //}
+
+            throw new NotImplementedException();
+        }
+
+        public async Task<ActionResult<ApplicationRole>> FindRoleById(string id)
+        {
+            //try
+            //{
+            //    HttpResponseMessage response = await _client.DeleteAsync($"http://localhost:5170/api/auth/removeUserFromRole?userName={userName}&roleName={roleName}");
+
+            //    return null;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine(ex.Message);
+            //    return null;
+            //}
+
+            throw new NotImplementedException();
+        }
+
+        public async Task<ActionResult<ApplicationRole>> UpdateRole(string id)
+        {
+            //try
+            //{
+            //    HttpResponseMessage response = await _client.DeleteAsync($"http://localhost:5170/api/auth/removeUserFromRole?userName={userName}&roleName={roleName}");
+
+            //    return null;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine(ex.Message);
+            //    return null;
+            //}
+
+            throw new NotImplementedException();
+        }
     }
 }
